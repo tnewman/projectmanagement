@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from configuration import ConfigurationFactory
-from datainterchange import Complexity, Status, Project, Task, Login
+from models import Complexity, Status, Project, Task, Login
 import psycopg2
 
 class DatabaseFactory:
