@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from configuration import ConfigurationFactory
-from datainterchange import Complexity, Project, Task, Login
+from datainterchange import Complexity, Status, Project, Task, Login
 import psycopg2
 
 class DatabaseFactory:
@@ -93,6 +93,7 @@ class Database:
     def load_user(self, username):
         return NotImplemented
 
+
 class PostgreSQL(Database):
     def open(self):
         self.database = psycopg2.connect(
@@ -109,7 +110,7 @@ class PostgreSQL(Database):
     def load_projects(self):
         projects = []
         sql = ('SELECT id, name, brief_description, description '
-               'FROM project;') 
+               'FROM project;')
         
         cursor = self.database.cursor()
         cursor.execute(sql)
@@ -130,65 +131,165 @@ class PostgreSQL(Database):
     
     def load_project(self, project_id):
         sql = ('SELECT id, name, brief_description, description '
-               'FROM project WHERE id = ?;')
+               'FROM project WHERE id = %s;')
+        parameters = [project_id]
         
         cursor = self.database.cursor()
-        cursor.execute(sql, project_id)
+        cursor.execute(sql, parameters)
         
         row = cursor.fetchone()
         
-        # Convert each Project row in the database to a Project object
+        # Convert the Project row in the database to a Project object
         if row:
             project = Project()
             project.id = row[0]
             project.name = row[1]
             project.brief_description = row[2]
             project.description = row[3]
+            
+            return project
         else:
             return None
     
     def insert_project(self, project):
         sql = ('INSERT INTO project (name, brief_description, '
-               'description) VALUES (?, ?, ?);')
-        raise NotImplementedError
+               'description) VALUES (%s, %s, %s);')
+        parameters = [project.name, project.brief_description, 
+                      project.description]
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        self.database.commit()
     
     def update_project(self, project):
-        sql = ('UPDATE project SET name=?, brief_description=?, '
-               'description=? WHERE id=?;')
-        raise NotImplementedError
+        sql = ('UPDATE project SET name=%s, brief_description=%s, '
+               'description=%s WHERE id=%s;')
+        parameters = [project.name, project.brief_description, 
+                      project.description, project.id]
         
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        self.database.commit()
+    
     def delete_project(self, project_id):
-        sql = ('DELETE FROM project WHERE id=?;')
-        raise NotImplementedError
+        sql = ('DELETE FROM project WHERE id=%s;')
+        parameters = [project_id]
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        self.database.commit()
     
     def load_tasks(self, project_id):
+        tasks = []
         sql = ('SELECT id, project_id, name, brief_description, '
                'description, complexity, due_date, status FROM task '
-               'WHERE project_id=?;')
-        raise NotImplementedError
+               'WHERE project_id=%s;')
+        parameters = [project_id]
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        
+        rows = cursor.fetchall()
+        
+        # Convert each Task row in the database to a Task object
+        for row in rows:
+            task = Task()
+            task.id = row[0]
+            task.project_id = row[1]
+            task.name = row[2]
+            task.brief_description = row[3]
+            task.description = row[4]
+            
+            try:
+                task.complexity = Complexity(row[5])
+            except(ValueError):
+                task.complexity = Complexity.UNKNOWN
+            
+            task.due_date = row[6]
+            
+            tasks.append(task)
+        
+        return tasks
     
     def load_task(self, project_id, task_id):
         sql = ('SELECT id, project_id, name, brief_description, '
                'description, complexity, due_date, status FROM task '
-               'WHERE id=? AND project_id=?;')
-        raise NotImplementedError
+               'WHERE project_id=%s AND id=%s;')
+        parameters = [project_id, task_id]
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        
+        row = cursor.fetchone()
+        
+        if row:
+            task = Task()
+            task.id = row[0]
+            task.project_id = row[1]
+            task.name = row[2]
+            task.brief_description = row[3]
+            task.description = row[4]
+            
+            try:
+                task.complexity = Complexity(row[5])
+            except(ValueError):
+                task.complexity = Complexity.UNKNOWN
+            
+            task.due_date = row[6]
+            
+            return task
+        else:
+            return None
     
     def insert_task(self, task):
         sql = ('INSERT INTO task (project_id, name, brief_description, '
                'description, complexity, due_date, status) VALUES '
-               '(?, ?, ?, ?, ?, ?, ?);')
-        raise NotImplementedError
+               '(%s, %s, %s, %s, %s, %s, %s);')
+        parameters = [task.project_id, task.name, task.brief_description, 
+                      task.description, str(task.complexity), task.due_date, 
+                      str(task.status)]
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        self.database.commit()
         
     def update_task(self, task):
-        sql = ('UPDATE task SET project_id=?, name=?, '
-               'brief_description=?, description=?, complexity=?, '
-               'due_date=?, status=? WHERE id=? AND project_id=?;')
-        raise NotImplementedError
+        sql = ('UPDATE task SET project_id=%s, name=%s, '
+               'brief_description=%s, description=%s, complexity=%s, '
+               'due_date=%s, status=%s WHERE id=%s AND project_id=%s;')
+        parameters = [task.project_id, task.name, task.brief_description, 
+                      task.description, str(task.complexity), task.due_date, 
+                      str(task.status), task.id, task.project_id]
         
-    def delete_task(self, task_id, project_id):
-        sql = ('DELETE FROM task WHERE id=? AND project_id=?;')
-        raise NotImplementedError
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        self.database.commit()
+        
+    def delete_task(self, project_id, task_id):
+        sql = ('DELETE FROM task WHERE id=%s AND project_id=%s;')
+        parameters = [task_id, project_id]
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        self.database.commit()
     
     def load_login(self, username):
-        sql = ('SELECT username, password FROM login WHERE username=?;')
-        raise NotImplementedError
+        sql = ('SELECT id, username, password FROM login WHERE username=%s;')
+        parameters = [username]
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql, parameters)
+        
+        row = cursor.fetchone()
+        
+        # Convert the Login row in the database to a Login object
+        if row:
+            login = Login()
+            login.id = row[0]
+            login.username = row[1]
+            login.password = row[2]
+            
+            return login
+        else:
+            return None
+

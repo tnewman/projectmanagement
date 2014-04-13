@@ -2,9 +2,17 @@ from datetime import datetime, timezone
 from enum import Enum
 
 class Complexity(Enum):
-    LOW = 0
-    MEDIUM = 1
-    HIGH = 2
+    UNKNOWN = 'UNKNOWN'
+    LOW = 'LOW'
+    MEDIUM = 'MEDIUM'
+    HIGH = 'HIGH'
+
+
+class Status(Enum):
+    UNKNOWN = 'UNKNOWN'
+    NOT_STARTED = 'NOT_STARTED'
+    IN_PROGRESS = 'IN_PROGRESS'
+    COMPLETE = 'COMPLETE'
 
 class Project:
     def __init__(self):
@@ -21,8 +29,9 @@ class Task:
         self.name = ''
         self.brief_description = ''
         self.description = ''
-        self.complexity = Complexity.LOW
+        self.complexity = Complexity.UNKNOWN
         self.due_date = datetime.now(timezone.utc)
+        self.status = Status.UNKNOWN
 
 
 class Login:
