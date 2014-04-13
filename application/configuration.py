@@ -43,6 +43,10 @@ class Configuration:
         return NotImplemented
     
     @abstractstaticmethod
+    def get_database_port():
+        return NotImplemented
+    
+    @abstractstaticmethod
     def get_database_username():
         return NotImplemented
     
@@ -63,6 +67,10 @@ class EnvironmentalVariableConfiguration(Configuration):
     @staticmethod
     def get_database_hostname():
         return os.environ['DATABASEHOSTNAME']
+    
+    @staticmethod
+    def get_database_port():
+        return os.environ['DATABASEPORT']
     
     @staticmethod
     def get_database_username():

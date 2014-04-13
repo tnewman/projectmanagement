@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from configuration import ConfigurationFactory
+import postgresql
 
 class DatabaseFactory:
     @staticmethod
@@ -7,13 +8,14 @@ class DatabaseFactory:
         configuration = ConfigurationFactory.get_configuration()
         type = configuration.get_database_type()
         hostname = configuration.get_database_hostname()
+        port = configuration.get_database_port()
         username = configuration.get_database_username()
         password = configuration.get_database_password()
         database_name = configuration.get_database_name()
         
         database_class = DatabaseFactory._get_database_class_from_str(type)
         
-        return database_class(hostname, username, password, database_name)
+        return database_class(hostname, port, username, password, database_name)
     
     @staticmethod
     def _get_database_class_from_str(class_name):
@@ -24,11 +26,13 @@ class DatabaseFactory:
 class Database:
     __metaclass__ = ABCMeta
     
-    def __init__(self, hostname, username, password, database_name):
+    def __init__(self, hostname, port, username, password, database_name):
         self.hostname = hostname
+        self.port = port
         self.username = username
         self.password = password
         self.database_name = database_name
+        self.database = None
     
     def __enter__(self):
         self.open()
@@ -38,7 +42,7 @@ class Database:
     
     @abstractmethod
     def open(self):
-        return NotImplemented
+        self.database = postgresql.open
     
     @abstractmethod
     def close(self):
