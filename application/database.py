@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from configuration import ConfigurationFactory
-import postgresql
+from datainterchange import Complexity, Project, Task, Login
+import psycopg2
 
 class DatabaseFactory:
     @staticmethod
@@ -94,18 +95,57 @@ class Database:
 
 class PostgreSQL(Database):
     def open(self):
-        return NotImplemented
+        self.database = psycopg2.connect(
+            user = self.username,
+            password = self.password,
+            host = self.hostname,
+            port = self.port,
+            database = self.database_name
+            )
     
     def close(self):
-        return NotImplemented
+        self.database.close()
     
     def load_projects(self):
-        sql = ('SELECT * FROM project;') 
-        raise NotImplementedError
+        projects = []
+        sql = ('SELECT id, name, brief_description, description '
+               'FROM project;') 
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql)
+        
+        rows = cursor.fetchall()
+        
+        # Convert each Project row in the database to a Project object
+        for row in rows:
+            project = Project()
+            project.id = row[0]
+            project.name = row[1]
+            project.brief_description = row[2]
+            project.description = row[3]
+            
+            projects.append(project)
+        
+        return projects
     
     def load_project(self, project_id):
-        sql = ('SELECT * FROM project WHERE id = 0;')
-        raise NotImplementedError
+        sql = ('SELECT id, name, brief_description, description '
+               'FROM project WHERE id = ?;')
+        
+        cursor = self.database.cursor()
+        cursor.execute(sql, project_id)
+        
+        row = cursor.fetchone()
+        
+        # Convert each Project row in the database to a Project object
+        if row:
+            project = Project()
+            project.id = row[0]
+            project.name = row[1]
+            project.brief_description = row[2]
+            project.description = row[3]
+        else:
+            return None
     
     def insert_project(self, project):
         sql = ('INSERT INTO project (name, brief_description, '
