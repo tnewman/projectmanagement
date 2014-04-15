@@ -79,6 +79,13 @@ class Database:
     def load_user(self, username):
         return NotImplemented
 
+class DataCalculationError(Exception):
+    def __str__(self):
+        print('DataCalculationError: Error related to calculation.')
+
+class DataIntegrityError(Exception):
+    def __str__(self):
+        print('DataIntegrityError: Error related to constraint violation.')
 
 class PostgreSQL(Database):    
     def load_projects(self):
@@ -263,10 +270,14 @@ class PostgreSQL(Database):
     def _execute_query(self, sql, parameters):
         self._open()
         
-        cursor = self.connection.cursor()
-        cursor.execute(sql, parameters)
-        
-        rows = cursor.fetchall()
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(sql, parameters)
+            rows = cursor.fetchall()
+        except(psycopg2.IntegrityError):
+            raise(DataIntegrityError)
+        except(psycopg2.DataError):
+            raise(DataCalculationError)
         
         self._close()
         
@@ -275,11 +286,14 @@ class PostgreSQL(Database):
     def _execute_non_query(self, sql, parameters):
         self._open()
         
-        cursor = self.connection.cursor()
-        rows = cursor.execute(sql, parameters)
-        self._execute_query(sql, parameters)
-        
-        self._connection.commit()
+        try:
+            cursor = self.connection.cursor()
+            rows = cursor.execute(sql, parameters)
+            self._connection.commit()
+        except(psycopg2.IntegrityError):
+            raise(DataIntegrityError)
+        except(psycopg2.DataError):
+            raise(DataCalculationError)
         
         self._close()
 
