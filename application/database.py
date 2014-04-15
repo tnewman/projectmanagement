@@ -33,21 +33,7 @@ class Database:
         self.username = username
         self.password = password
         self.database_name = database_name
-        self.database = None
-    
-    def __enter__(self):
-        self.open()
-    
-    def __exit__(self):
-        self.close()
-    
-    @abstractmethod
-    def open(self):
-        self.database = postgresql.open
-    
-    @abstractmethod
-    def close(self):
-        return NotImplemented
+        self.connection = None
     
     @abstractmethod
     def load_projects(self):
@@ -94,28 +80,14 @@ class Database:
         return NotImplemented
 
 
-class PostgreSQL(Database):
-    def open(self):
-        self.database = psycopg2.connect(
-            user = self.username,
-            password = self.password,
-            host = self.hostname,
-            port = self.port,
-            database = self.database_name
-            )
-    
-    def close(self):
-        self.database.close()
-    
+class PostgreSQL(Database):    
     def load_projects(self):
         projects = []
         sql = ('SELECT id, name, brief_description, description '
                'FROM project;')
+        parameters = []
         
-        cursor = self.database.cursor()
-        cursor.execute(sql)
-        
-        rows = cursor.fetchall()
+        rows = self._execute_query(sql, parameters)
         
         # Convert each Project row in the database to a Project object
         for row in rows:
@@ -134,13 +106,12 @@ class PostgreSQL(Database):
                'FROM project WHERE id = %s;')
         parameters = [project_id]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        
-        row = cursor.fetchone()
+        rows = self._execute_query(sql, parameters)
         
         # Convert the Project row in the database to a Project object
-        if row:
+        if rows:
+            row = rows[0]
+            
             project = Project()
             project.id = row[0]
             project.name = row[1]
@@ -157,9 +128,7 @@ class PostgreSQL(Database):
         parameters = [project.name, project.brief_description, 
                       project.description]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        self.database.commit()
+        self._execute_non_query(sql, parameters)
     
     def update_project(self, project):
         sql = ('UPDATE project SET name=%s, brief_description=%s, '
@@ -167,9 +136,7 @@ class PostgreSQL(Database):
         parameters = [project.name, project.brief_description, 
                       project.description, project.id]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        self.database.commit()
+        self._execute_non_query(sql, parameters)
     
     def delete_project(self, project_id):
         sql = ('DELETE FROM project WHERE id=%s;')
@@ -186,10 +153,7 @@ class PostgreSQL(Database):
                'WHERE project_id=%s;')
         parameters = [project_id]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        
-        rows = cursor.fetchall()
+        rows = self._execute_query(sql, parameters)
         
         # Convert each Task row in the database to a Task object
         for row in rows:
@@ -217,12 +181,11 @@ class PostgreSQL(Database):
                'WHERE project_id=%s AND id=%s;')
         parameters = [project_id, task_id]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
+        rows = self._execute_query(sql, parameters)
         
-        row = cursor.fetchone()
+        if rows:
+            row = rows[0]
         
-        if row:
             task = Task()
             task.id = row[0]
             task.project_id = row[1]
@@ -249,9 +212,7 @@ class PostgreSQL(Database):
                       task.description, str(task.complexity), task.due_date, 
                       str(task.status)]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        self.database.commit()
+        self._execute_non_query(sql, parameters)
         
     def update_task(self, task):
         sql = ('UPDATE task SET project_id=%s, name=%s, '
@@ -261,29 +222,23 @@ class PostgreSQL(Database):
                       task.description, str(task.complexity), task.due_date, 
                       str(task.status), task.id, task.project_id]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        self.database.commit()
+        self._execute_non_query(sql, parameters)
         
     def delete_task(self, project_id, task_id):
         sql = ('DELETE FROM task WHERE id=%s AND project_id=%s;')
         parameters = [task_id, project_id]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        self.database.commit()
+        self._execute_non_query(sql, parameters)
     
     def load_login(self, username):
         sql = ('SELECT id, username, password FROM login WHERE username=%s;')
         parameters = [username]
         
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        
-        row = cursor.fetchone()
+        self._execute_query(sql, parameters)
         
         # Convert the Login row in the database to a Login object
-        if row:
+        if rows:
+            row = rows[0]
             login = Login()
             login.id = row[0]
             login.username = row[1]
@@ -292,4 +247,39 @@ class PostgreSQL(Database):
             return login
         else:
             return None
+    
+    def _open(self):
+        self.connection = psycopg2.connect(
+            user = self.username,
+            password = self.password,
+            host = self.hostname,
+            port = self.port,
+            database = self.database_name
+            )
+    
+    def _close(self):
+        self.connection.close()
+    
+    def _execute_query(self, sql, parameters):
+        self._open()
+        
+        cursor = self.connection.cursor()
+        cursor.execute(sql, parameters)
+        
+        rows = cursor.fetchall()
+        
+        self._close()
+        
+        return rows
+    
+    def _execute_non_query(self, sql, parameters):
+        self._open()
+        
+        cursor = self.connection.cursor()
+        rows = cursor.execute(sql, parameters)
+        self._execute_query(sql, parameters)
+        
+        self._connection.commit()
+        
+        self._close()
 
