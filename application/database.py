@@ -3,7 +3,7 @@
 
 from abc import ABCMeta, abstractmethod
 from configuration import ConfigurationFactory
-from models import Complexity, Status, Project, Task, Login
+from model import Complexity, Status, Project, Task, Login
 import psycopg2
 
 class DatabaseFactory:

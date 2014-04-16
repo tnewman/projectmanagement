@@ -6,5 +6,5 @@ application
 
    configuration
    database
-   models
-   server
+   model
+   projectmanagement
