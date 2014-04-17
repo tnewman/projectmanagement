@@ -1,45 +1,100 @@
-from flask import Flask
+from database import DatabaseFactory
+from flask import Flask, g, render_template, redirect, session, url_for
 app = Flask(__name__)
 
-@app.route('/projects')
-def view_projects():
-    return 'Test viewing all the projects'
+app.debug = True
 
-@app.route('/projects/add')
+@app.route('/')
+def index():
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
+    return redirect(url_for('projects'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if check_session_login():
+        return redirect(url_for('logout'))
+    
+    return render_template('login.html')
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    response.delete_cookie(app.session_cookie_name)
+
+@app.route('/projects', methods=['GET'])
+def projects():
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
+    return render_template('viewprojects.html')
+
+@app.route('/projects/addproject', methods=['POST'])
 def add_project():
-    return 'Test adding of the project'    
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
+    return render_template('addproject.html')
 
 @app.route('/project/<int:project_id>')
-def view_project(project_id):
-    return 'Test viewing of the project'
+def project(project_id, methods=['GET']):
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
+    return render_template('viewproject.html')
 
-@app.route('/project/update/<int:project_id>')
-def update_project(project_id):
-    return 'Test updating of the project'
+@app.route('/project/<int:project_id>/modifyproject')
+def modify_project(project_id, methods=['GET', 'POST']):
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
+    return render_template('modifyproject.html')
 
-@app.route('/project/delete/<int:project_id>')
-def delete_project(project_id):
+@app.route('/project/<int:project_id>/deleteproject')
+def delete_project(project_id, methods=['POST']):
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
     return 'Test deleting of the project'
 
-@app.route('/tasks')
-def view_tasks():
-    return 'Test viewing of all tasks'
+@app.route('/project/<int:project_id>/addtask')
+def add_task(project_id, methods=['GET', 'POST']):
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
+    return render_template('addproject.html')
 
-@app.route('/tasks/add')
-def add_task():
-    return 'Test adding of the task'
+@app.route('/project/<int:project_id>/task/<int:task_id>')
+def task(project_id, task_id, methods=['GET']):
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
+    return render_template('viewtask.html')
 
-@app.route('/task/<int:task_id>')
-def view_task(task_id):
-    return 'Test viewing of the task'
+@app.route('/project/<int:project_id>/task/<int:task_id>/modifytask')
+def modify_task(project_id, task_id, methods=['GET', 'POST']):
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
+    return render_template('modifytask.html')
 
-@app.route('/task/<int:task_id>/update')
-def update_task(task_id):
-    return 'Test updating of the task'
-
-@app.route('/task/<int:task_id>/delete')
-def delete_task(task_id):
+@app.route('/project/<int:project_id>/task/<int:task_id>/deletetask')
+def delete_task(project_id, task_id, methods=['POST']):
+    if not check_session_login():
+        return redirect(url_for('login'))
+    
     return 'Test deleting of the task'
+
+def check_session_login():
+    g.database = DatabaseFactory.get_database()
+    
+    if 'username' in session:
+        g.user = g.database.load_login(session['username'])
+        
+        if g.user:
+            return True
+    
+    return False
 
 if __name__ == '__main__':
     app.run()

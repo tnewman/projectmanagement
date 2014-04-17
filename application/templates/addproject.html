@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Add Project{% endblock %}
+{% block breadcrums %}
+<a href="listprojects.html">Projects</a>/Add Project - <a href="login.html" id="logout">Logout</a>
+{% endblock %}
+{% block content %}
+<form method="post" action="listprojects.html" id="form">
+	<p>
+		<label>Project Name: <input id="name" type="text" name="name" /> <span id="nameerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Brief Project Description: <input id="briefdescription" type="text" name="briefdescription" /></label> <span id="briefdescriptionerror" class="error"></span>
+	</p>
+	<p>
+		<label>Project Description: <span id="descriptionerror" class="error"></span><br /><br />
+		<textarea id="description" name="description" cols="40" rows="5"></textarea></label>
+	</p>
+	<p>
+		<input id="submit" type="submit" value="Add Project" />
+	</p>
+</form>
+{% endblock %}

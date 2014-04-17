@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Add Task{% endblock %}
+{% block breadcrums %}
+<a href="listprojects.html">Projects</a>/<a href="viewproject.html">Web Server Programming Application</a>/Add Task - <a href="login.html" id="logout">Logout</a>
+{% endblock %}
+{% block content %}
+<form method="post" action="viewproject.html" id="form">
+	<p>
+		<label>Task Name: <input id="name" type="text" name="name" /> <span id="nameerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Brief Task Description: <input id="briefdescription" type="text" name="briefdescription" /> <span id="briefdescriptionerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Task Description: <span id="descriptionerror" class="error"></span><br /><br />
+		<textarea id="description" name="description" cols="40" rows="5"></textarea></label>
+	</p>
+	<p>
+		<label>Complexity:</label>
+		<select>
+			<option>Low</option>
+			<option>Medium</option>
+			<option>High</option>
+		</select>
+	</p>
+	<p>
+		<label>Due Date: <input id="duedate" type="text" name="duedate" /> <span id="duedateerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Status:</label>
+		<select>
+			<option>Not Started</option>
+			<option>In Progress</option>
+			<option>Complete</option>
+		</select>
+	</p>
+	<p>
+		<input id="submit" type="submit" value="Add Task" />
+	</p>
+</form>
+{% endblock %}

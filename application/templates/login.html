@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Login{% endblock %}
+{% block breadcrums %}
+{% endblock %}
+{% block content %}
+<form method="post" action="listprojects.html">
+	<p>
+		<label>Username: <input id="username" type="text" name="username" /> <span id="usernameerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Password: <input id="password" type="password" name="password" /> <span id="passworderror" class="error"></span></label>
+	</p>
+	<p>
+		<input id="submit" type="submit" value="Login" />
+	</p>
+</form>
+{% endblock %}

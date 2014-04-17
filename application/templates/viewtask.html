@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Modify Web Server Programming Application Project{% endblock %}
+{% block breadcrums %}
+<a href="listprojects.html">Projects</a>/<a href="viewproject.html">Web Server Programming Application</a>/Modify Project - <a href="login.html" id="logout">Logout</a>
+{% endblock %}
+{% block content %}
+<form method="post" action="viewproject.html" id="form">
+	<p>
+		<label>Project Name: <input id="name" type="text" name="name" value="Web Server Programming Application"/> <span id="nameerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Brief Project Description: <input id="briefdescription" type="text" name="briefdescription" value="A web application used to manage tasks for projects"/> <span id="briefdescriptionerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Project Description: <span id="descriptionerror" class="error"></span><br /><br />
+		<textarea id="description" name="description" cols="40" rows="5">A web application used to manage tasks for projects.</textarea></label>
+	</p>
+	<p>
+		<input id="submit" type="submit" value="Modify Project" />
+	</p>
+</form>
+{% endblock %}

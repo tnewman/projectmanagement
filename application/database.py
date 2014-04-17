@@ -23,11 +23,11 @@ class DatabaseFactory:
         
         configuration = ConfigurationFactory.get_configuration()
         type = configuration.get_database_type()
-        hostname = configuration.get_databasehostname()
-        port = configuration.get_databaseport()
-        username = configuration.get_databaseusername()
-        password = configuration.get_databasepassword()
-        database_name = configuration.getdatabase_name()
+        hostname = configuration.get_database_hostname()
+        port = configuration.get_database_port()
+        username = configuration.get_database_username()
+        password = configuration.get_database_password()
+        database_name = configuration.get_database_name()
         
         database_class = DatabaseFactory._get_database_class_from_str(type)
         

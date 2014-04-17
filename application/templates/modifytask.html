@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Modify Prototype Task{% endblock %}
+{% block breadcrums %}
+<a href="listprojects.html">Projects</a>/<a href="viewproject.html">Web Server Programming Application</a>/<a href="viewtask.html">Prototype</a>/Modify Task - <a href="login.html" id="logout">Logout</a>
+{% endblock %}
+{% block content %}
+<form method="post" action="viewtask.html" id="form">
+	<p>
+		<label>Task Name: <input id="name" type="text" name="name" value="Prototype" /> <span id="nameerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Brief Task Description: <input id="briefdescription" type="text" name="briefdescription" value="Create the client-side prototype" /> <span id="briefdescriptionerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Task Description: <span id="descriptionerror" class="error"></span><br /><br />
+		<textarea id="description" name="description" cols="40" rows="5">The initial prototype shall consist of all web pages that will exist for the completed application. These pages shall consist of sample data that provides enough for the user to navigate through the entire application.</textarea></label>
+	</p>
+	<p>
+		<label>Complexity:</label>
+		<select>
+			<option>Low</option>
+			<option selected="selected">Medium</option>
+			<option>High</option>
+		</select>
+	</p>
+	<p>
+		<label>Due Date: <input id="duedate" type="text" name="duedate" value="4/2/2014" /> <span id="duedateerror" class="error"></span></label>
+	</p>
+	<p>
+		<label>Status:</label>
+		<select>
+			<option>Not Started</option>
+			<option selected="selected">In Progress</option>
+			<option>Complete</option>
+		</select>
+	</p>
+	<p>
+		<input id="submit" type="submit" value="Modify Task" />
+	</p>
+</form>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}Web Server Programming Application{% endblock %}
+{% block breadcrums %}
+<a href="listprojects.html">Projects</a>/Web Server Programming Application - <a href="login.html" onclick="warnLogout()" id="logout">Logout</a>
+{% endblock %}
+{% block content %}
+<p>A web application used to manage tasks for projects.</p>
+<table>
+	<tr>
+		<th>Task Name</th>
+		<th>Brief Task Description</th>
+		<th>Complexity Level</th>
+		<th>Due Date</th>
+		<th>Status</th>
+	</tr>
+	<tr>
+		<td><a href="viewtask.html">Prototype</a></td>
+		<td>Create the client-side prototype</td>
+		<td>Medium</td>
+		<td>4/2/2014</td>
+		<td>In-Progress</td>
+	</tr>
+</table>
+<p>
+	<a href="addtask.html">Add Task</a>
+</p>
+<p>
+	<a href="modifyproject.html">Modify Project</a>
+	<a href="" id="delete">Delete Project</a>
+</p>
+{% endblock %}

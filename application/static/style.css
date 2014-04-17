@@ -1,0 +1,133 @@
+body
+{
+	margin: 0;
+	color: #005b89;
+	font-family: arial;
+}
+
+h1
+{
+	color: white;
+	background-color: #005b89;
+	padding: 0.25em;
+}
+
+h2
+{
+	color: white;
+	background-color: #005b89;
+	padding: 0.25em;
+	font-size: 1.25em;
+}
+
+h3
+{
+	color: white;
+	background-color: #005b89;
+	padding: 0.25em;
+	font-size: 1em;
+}
+
+th
+{
+	text-align: left;
+}
+
+p
+{
+	padding: 0.25em;
+}
+
+a
+{
+	color: #005b89;
+}
+
+table, th, td
+{
+	border: 0.15em solid #005b89;
+	padding: 0.20em;
+	border-collapse: collapse;
+}
+
+th
+{
+	color: white;
+	background-color: #005b89;
+}
+
+a:hover
+{
+	text-decoration: none;
+}
+
+#header h1
+{
+	margin-top: 0;
+	padding-left: 5%;
+	padding-right: 5%;
+}
+
+#footer p
+{
+	color: white;
+	background-color: #005b89;
+	padding-left: 5%;
+	padding-right: 5%;
+	font-size: .75em;
+}
+
+#container
+{
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+#navigation ul
+{
+	list-style: none;
+	padding: 0.25em;
+}
+
+input
+{
+	color: white;
+	background-color: #005b89;
+}
+
+input:focus
+{
+	color: #005b89;
+	background-color: white;
+}
+
+textarea
+{
+	color: white;
+	background-color: #005b89;
+	font-family: arial;
+}
+
+textarea:focus
+{
+	color: #005b89;
+	background-color: white;
+}
+
+select
+{
+	color: white;
+	background-color: #005b89;
+	font-family: arial;
+}
+
+select:focus
+{
+	color: #005b89;
+	background-color: white;
+}
+
+.error
+{
+	color: red;
+}
