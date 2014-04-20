@@ -1,6 +1,6 @@
 CREATE TABLE project (
   id SERIAL,
-  name VARCHAR(50) NOT NULL UNIQUE,
+  name VARCHAR(50) NOT NULL,
   brief_description VARCHAR(45) NOT NULL,
   description VARCHAR(1000) NOT NULL,
   PRIMARY KEY (id));
@@ -8,11 +8,11 @@ CREATE TABLE project (
 CREATE TABLE task (
   id SERIAL,
   project_id INTEGER NOT NULL,
-  name VARCHAR(45) NOT NULL UNIQUE,
+  name VARCHAR(45) NOT NULL,
   brief_description VARCHAR(45) NOT NULL,
-  description VARCHAR(45) NOT NULL,
+  description VARCHAR(1000) NOT NULL,
   complexity VARCHAR(45) NOT NULL,
-  due_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  due_date TIMESTAMP NOT NULL,
   status VARCHAR(45) NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_task_project

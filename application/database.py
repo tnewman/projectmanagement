@@ -1,56 +1,27 @@
 ''' database contains classes to provide interaction with 
-	a persistent data store.'''
+    a persistent data store.'''
 
 from abc import ABCMeta, abstractmethod
-from configuration import ConfigurationFactory
 from model import Complexity, Status, Project, Task, Login
 import psycopg2
 
-class DatabaseFactory:
-    ''' The DatabaseFactory provides a consistent interface 
-        to access any implemented database that inherits from 
-        the :class:`Database` class.'''
-    
-    @staticmethod
-    def get_database():
-        ''' Creates an instance of the database based on the configuration 
-        provided by a configuration object derived from 
-        :class:`configuration.Configuration`.
+def get_database_class_from_str(class_name):
+    ''' Converts a class name to a class object that can be found in 
+        the database module.
+        
+        Args:
+            class_name(str): The name of the class to convert. The name 
+            must exist in the database module.
         
         Returns:
-            A :class:`Database` object used to perform database-agnostic 
-            operations.'''
+            A class object derived from :class:`Database`
         
-        configuration = ConfigurationFactory.get_configuration()
-        type = configuration.get_database_type()
-        hostname = configuration.get_database_hostname()
-        port = configuration.get_database_port()
-        username = configuration.get_database_username()
-        password = configuration.get_database_password()
-        database_name = configuration.get_database_name()
-        
-        database_class = DatabaseFactory._get_database_class_from_str(type)
-        
-        return database_class(hostname, port, username, password, database_name)
+        Raises:
+            AttributeError: The specified class does not exist.'''
     
-    @staticmethod
-    def _get_database_class_from_str(class_name):
-        ''' Converts a class name to a class object that can be found in 
-            the database module.
-            
-            Args:
-                class_name(str): The name of the class to convert. The name 
-                must exist in the database module.
-            
-            Returns:
-                A class object derived from :class:`Database`
-            
-            Raises:
-                AttributeError: The specified class does not exist.'''
-        
-        module_name = 'database'
-        module = __import__(module_name)
-        return getattr(module, class_name)
+    module_name = __name__
+    module = __import__(module_name)
+    return getattr(module, class_name)
 
 class Database:
     ''' Abstract base class specifying the interfaces that all database 
@@ -82,6 +53,16 @@ class Database:
         
         #: (Connection): The database connection object.
         self._connection = None
+    
+    def open(self):
+        ''' Opens the database connection.'''
+        
+        return NotImplemented
+    
+    def close(self):
+        ''' Closes the database connection.'''
+        
+        return NotImplemented
     
     @abstractmethod
     def load_projects(self):
@@ -188,7 +169,8 @@ class Database:
     
     @abstractmethod
     def load_task(self, project_id, task_id):
-        ''' Loads a task from the database.
+        ''' Loads a task from the database based on the project_id and 
+            task_id.
             
             Args:
                 project_id (int): The project id of the task to retrieve 
@@ -243,7 +225,7 @@ class Database:
         return NotImplemented
     
     @abstractmethod
-    def delete_task(self, task_id):
+    def delete_task(self, project_id, task_id):
         ''' Deletes an existing task from the database.
             
             Args:
@@ -298,6 +280,23 @@ class DataIntegrityError(Exception):
 
 class PostgreSQL(Database):
     ''' Provides a database implementation for the PostgreSQL database.'''
+    
+    def open(self):
+        ''' Opens the database connection.'''
+        
+        self._connection = psycopg2.connect(
+            user = self.username,
+            password = self.password,
+            host = self.hostname,
+            port = self.port,
+            database = self.database_name
+            )
+    
+    def close(self):
+        ''' Closes the database connection.'''
+        
+        self._connection.close()
+    
     def load_projects(self):
         ''' Loads all of the projects from the database.
             
@@ -408,7 +407,8 @@ class PostgreSQL(Database):
         self._execute_non_query(sql, parameters)
     
     def delete_project(self, project_id):
-        ''' Deletes an existing project from the database.
+        ''' Deletes an existing project from the database. Deletes any 
+            tasks associated with the project as well.
             
             Args:
                 project_id (int): The id of the project to delete from 
@@ -420,12 +420,13 @@ class PostgreSQL(Database):
                 
                 DataIntegrityError: Constrain violation.'''
         
+        sql = ('DELETE FROM task WHERE project_id=%s;')
+        parameters = [project_id]
+        self._execute_non_query(sql, parameters)
+        
         sql = ('DELETE FROM project WHERE id=%s;')
         parameters = [project_id]
-        
-        cursor = self.database.cursor()
-        cursor.execute(sql, parameters)
-        self.database.commit()
+        self._execute_non_query(sql, parameters)
     
     def load_tasks(self, project_id):
         ''' Loads all of the tasks from the database.
@@ -537,8 +538,8 @@ class PostgreSQL(Database):
                'description, complexity, due_date, status) VALUES '
                '(%s, %s, %s, %s, %s, %s, %s);')
         parameters = [task.project_id, task.name, task.brief_description, 
-                      task.description, str(task.complexity), task.due_date, 
-                      str(task.status)]
+                      task.description, task.complexity.value, task.due_date, 
+                      task.status.value]
         
         self._execute_non_query(sql, parameters)
         
@@ -559,8 +560,8 @@ class PostgreSQL(Database):
                'brief_description=%s, description=%s, complexity=%s, '
                'due_date=%s, status=%s WHERE id=%s AND project_id=%s;')
         parameters = [task.project_id, task.name, task.brief_description, 
-                      task.description, str(task.complexity), task.due_date, 
-                      str(task.status), task.id, task.project_id]
+                      task.description, task.complexity.value, task.due_date, 
+                      task.status.value, task.id, task.project_id]
         
         self._execute_non_query(sql, parameters)
         
@@ -603,7 +604,7 @@ class PostgreSQL(Database):
         sql = ('SELECT id, username, password FROM login WHERE username=%s;')
         parameters = [username]
         
-        self._execute_query(sql, parameters)
+        rows = self._execute_query(sql, parameters)
         
         # Convert the Login row in the database to a Login object
         if rows:
@@ -616,22 +617,6 @@ class PostgreSQL(Database):
             return login
         else:
             return None
-    
-    def _open(self):
-        ''' Opens the database connection.'''
-        
-        self._connection = psycopg2.connect(
-            user = self.username,
-            password = self.password,
-            host = self.hostname,
-            port = self.port,
-            database = self.database_name
-            )
-    
-    def _close(self):
-        ''' Closes the database connection.'''
-        
-        self._connection.close()
     
     def _execute_query(self, sql, parameters):
         ''' Executes an SQL query that returns results.
@@ -650,8 +635,6 @@ class PostgreSQL(Database):
                 
                 DataIntegrityError: Constrain violation.'''
         
-        self._open()
-        
         try:
             cursor = self._connection.cursor()
             cursor.execute(sql, parameters)
@@ -660,8 +643,6 @@ class PostgreSQL(Database):
             raise(DataIntegrityError)
         except(psycopg2.DataError):
             raise(DataCalculationError)
-        
-        self._close()
         
         return rows
     
@@ -678,8 +659,6 @@ class PostgreSQL(Database):
                 
                 DataIntegrityError: Constrain violation.'''
         
-        self._open()
-        
         try:
             cursor = self._connection.cursor()
             rows = cursor.execute(sql, parameters)
@@ -688,6 +667,4 @@ class PostgreSQL(Database):
             raise(DataIntegrityError)
         except(psycopg2.DataError):
             raise(DataCalculationError)
-        
-        self._close()
 

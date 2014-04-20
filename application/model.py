@@ -4,23 +4,27 @@ from enum import Enum
 class Complexity(Enum):
     ''' Represents the task complexity.'''
     
+    #: The task complexity is unknown.
+    UNKNOWN = 'Unknown'
     #: The task complexity is low.
-    LOW = 'LOW'
+    LOW = 'Low'
     #: The task complexity is medium.
-    MEDIUM = 'MEDIUM'
+    MEDIUM = 'Medium'
     #: The task complexity is high.
-    HIGH = 'HIGH'
+    HIGH = 'High'
 
 
 class Status(Enum):
     ''' Represents the class status.'''
     
+    #: The task status is unknown.
+    UNKNOWN = 'Unknown'
     #: The task has not been started.
-    NOT_STARTED = 'NOT_STARTED'
+    NOT_STARTED = 'Not Started'
     #: The task is in-progress.
-    IN_PROGRESS = 'IN_PROGRESS'
+    IN_PROGRESS = 'In-Progress'
     #: The task has been completed.
-    COMPLETE = 'COMPLETE'
+    COMPLETE = 'Complete'
 
 class Project:
     ''' Represents a project.'''
@@ -192,7 +196,10 @@ class Task:
         if isinstance(value, datetime):
             self._due_date = value
         else:
-            self._due_date = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+            try:
+                self._due_date = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+            except(ValueError):
+                self._due_date = datetime.strptime(value, '%Y-%m-%d')
     
     @property
     def status(self):
@@ -205,7 +212,7 @@ class Task:
         self._status = Status(value)
     
     def is_task_past_due(self):
-        return self._due_date < datetime.now()
+        return self.due_date < datetime.now() and self.status != Status.COMPLETE
 
 
 class Login:

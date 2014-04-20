@@ -1,22 +1,31 @@
 {% extends "layout.html" %}
-{% block title %}Modify Web Server Programming Application Project{% endblock %}
+{% block title %}{{ request.task.name }}{% endblock %}
 {% block breadcrums %}
-<a href="listprojects.html">Projects</a>/<a href="viewproject.html">Web Server Programming Application</a>/Modify Project - <a href="login.html" id="logout">Logout</a>
+ - <a href="login.html" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
-<form method="post" action="viewproject.html" id="form">
-	<p>
-		<label>Project Name: <input id="name" type="text" name="name" value="Web Server Programming Application"/> <span id="nameerror" class="error"></span></label>
-	</p>
-	<p>
-		<label>Brief Project Description: <input id="briefdescription" type="text" name="briefdescription" value="A web application used to manage tasks for projects"/> <span id="briefdescriptionerror" class="error"></span></label>
-	</p>
-	<p>
-		<label>Project Description: <span id="descriptionerror" class="error"></span><br /><br />
-		<textarea id="description" name="description" cols="40" rows="5">A web application used to manage tasks for projects.</textarea></label>
-	</p>
-	<p>
-		<input id="submit" type="submit" value="Modify Project" />
-	</p>
-</form>
+<table>
+	<tr>
+		<th>Brief Task Description</th>
+		<th>Complexity Level</th>
+		<th>Due Date</th>
+		<th>Status</th>
+        <th>Past Due?</th>
+	</tr>
+	<tr>
+		<td>{{ request.task.brief_description }}</td>
+		<td>{{ request.task.complexity.value }}</td>
+		<td>{{ request.task.due_date.strftime('%Y-%m-%d') }}</td>
+		<td>{{ request.task.status.value }}</td>
+        <td>{% if request.task.is_task_past_due() %}Past Due{% else %}On-Time{% endif %}</td>
+	</tr>
+</table>
+<h3>Task Description</h3>
+<p>{{ request.task.description }}</p>
+<p>
+	<a href="{{ url_for('modify_task', project_id=request.task.project_id, task_id=request.task.id) }}">Modify Task</a>
+    <form method="post" action="{{ url_for('delete_task', project_id=request.task.project_id, task_id=request.task.id) }}">
+        <input id="delete" type="submit" value="Delete Task" />
+    </form>
+</p>
 {% endblock %}

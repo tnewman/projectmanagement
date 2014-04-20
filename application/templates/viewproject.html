@@ -1,31 +1,39 @@
 {% extends "layout.html" %}
-{% block title %}Web Server Programming Application{% endblock %}
+{% block title %}{{ request.project.name }}{% endblock %}
 {% block breadcrums %}
-<a href="listprojects.html">Projects</a>/Web Server Programming Application - <a href="login.html" onclick="warnLogout()" id="logout">Logout</a>
+ - <a href="login.html" onclick="warnLogout()" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
-<p>A web application used to manage tasks for projects.</p>
+{% if request.tasks %}
+<p>{{ request.project.description }}</p>
 <table>
-	<tr>
-		<th>Task Name</th>
-		<th>Brief Task Description</th>
-		<th>Complexity Level</th>
-		<th>Due Date</th>
-		<th>Status</th>
-	</tr>
-	<tr>
-		<td><a href="viewtask.html">Prototype</a></td>
-		<td>Create the client-side prototype</td>
-		<td>Medium</td>
-		<td>4/2/2014</td>
-		<td>In-Progress</td>
-	</tr>
+    <tr>
+        <th>Task Name</th>
+        <th>Brief Task Description</th>
+        <th>Complexity Level</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Past Due?</th>
+    </tr>
+    {% for task in request.tasks %}
+    <tr>
+        <td><a href="{{ url_for('task', project_id=request.project.id, task_id=task.id) }}">{{ task.name }}</a></td>
+        <td>{{ task.brief_description }}</td>
+        <td>{{ task.complexity.value }}</td>
+        <td>{{ task.due_date.strftime('%Y-%m-%d') }}</td>
+        <td>{{ task.status.value }}</td>
+        <td>{% if task.is_task_past_due() %}Past Due{% else %}On-Time{% endif %}</td>
+    </tr>
+    {% endfor %}
 </table>
+{% else %}
+    There are no tasks!
+{% endif %}
 <p>
-	<a href="addtask.html">Add Task</a>
+    <a href="{{ url_for('add_task', project_id=request.project.id) }}">Add Task</a>
 </p>
 <p>
-	<a href="modifyproject.html">Modify Project</a>
-	<a href="" id="delete">Delete Project</a>
+    <a href="{{ url_for('modify_project', project_id=request.project.id) }}">Modify Project</a>
+    <a href="{{ url_for('delete_project', project_id=request.project.id) }}" id="delete">Delete Project</a>
 </p>
 {% endblock %}

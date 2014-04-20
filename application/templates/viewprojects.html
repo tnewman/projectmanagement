@@ -1,20 +1,26 @@
 {% extends "layout.html" %}
 {% block title %}Projects{% endblock %}
 {% block breadcrums %}
-Projects - <a href="login.html" id="logout">Logout</a>
+ - <a href="{{ url_for('logout') }}" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
+{% if request.projects %}
 <table>
-	<tr>
-		<th>Project Name</th>
-		<th>Brief Project Description</th>
-	</tr>
-	<tr>
-		<td><a href="viewproject.html">Web Server Programming Application</a></td>
-		<td>A web application used to manage tasks for projects</td>
-	</tr>
+    <tr>
+        <th>Project Name</th>
+        <th>Brief Project Description</th>
+    </tr>
+    {% for project in request.projects %}
+    <tr>
+        <td><a href="{{ url_for('project', project_id=project.id) }}">{{ project.name }}</a></td>
+        <td>{{ project.brief_description }}</td>
+    </tr>
+    {% endfor %}
 </table>
+{% else %}
+    There are no projects!
+{% endif %}
 <p>
-	<a href="addproject.html">Add Project</a>
+    <a href="{{ url_for('add_project') }}">Add Project</a>
 </p>
 {% endblock %}

@@ -306,7 +306,7 @@ function validateDueDate()
 	}
 	else if(!isFieldDate(dueDateField))
 	{
-		errorDiv.innerHTML = "Due Date must be in the form MM/DD/YYYY";
+		errorDiv.innerHTML = "Due Date must be in the form YYYY-MM-DD";
 		return false;
 	}
 	
@@ -365,7 +365,7 @@ function isFieldBlank(element)
 function isFieldDate(element)
 {
 	var dateStr = element.value;
-	var datePieces = dateStr.split("/");
+	var datePieces = dateStr.split("-");
 	
 	// A date must consist of 3 parts: Month/Day/Year
 	if(datePieces.length != 3)
@@ -390,9 +390,9 @@ function isFieldDate(element)
 		}
 	}
 	
-	var month = datePieces[0];
-	var day = datePieces[1];
-	var year = datePieces[2];
+	var year = datePieces[0];
+    var month = datePieces[1];
+    var day = datePieces[2];
 	
 	// There are 12 months in a year
 	if((month < 1) || (month > 12))

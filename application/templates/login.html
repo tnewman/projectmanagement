@@ -3,15 +3,29 @@
 {% block breadcrums %}
 {% endblock %}
 {% block content %}
-<form method="post" action="listprojects.html">
-	<p>
-		<label>Username: <input id="username" type="text" name="username" /> <span id="usernameerror" class="error"></span></label>
-	</p>
-	<p>
-		<label>Password: <input id="password" type="password" name="password" /> <span id="passworderror" class="error"></span></label>
-	</p>
-	<p>
-		<input id="submit" type="submit" value="Login" />
-	</p>
+<form method="post" action="{{ url_for('login_post') }}">
+    <p>
+        <label>
+            Username: 
+            <input id="username" type="text" value="{% if request.form.get('username') %}{{ request.form.get('username') }}{% endif %}" name="username" /> 
+            <span id="usernameerror" class="error">
+                {% if 'username_blank' in request.errors %}Username cannot be blank!{% endif %}
+                {% if 'username_not_exist' in request.errors %}Username does not exist!{% endif %}
+            </span>
+        </label>
+    </p>
+    <p>
+        <label>
+            Password: 
+            <input id="password" type="password" name="password" /> 
+            <span id="passworderror" class="error">
+                {% if 'password_blank' in request.errors %}Password cannot be blank!{% endif %}
+                {% if 'password_incorrect' in request.errors %}Password is incorrect!{% endif %}
+            </span>
+        </label>
+    </p>
+    <p>
+        <input id="submit" type="submit" value="Login" />
+    </p>
 </form>
 {% endblock %}

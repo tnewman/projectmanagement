@@ -1,22 +1,43 @@
 {% extends "layout.html" %}
 {% block title %}Add Project{% endblock %}
 {% block breadcrums %}
-<a href="listprojects.html">Projects</a>/Add Project - <a href="login.html" id="logout">Logout</a>
+ - <a href="login.html" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
-<form method="post" action="listprojects.html" id="form">
-	<p>
-		<label>Project Name: <input id="name" type="text" name="name" /> <span id="nameerror" class="error"></span></label>
-	</p>
-	<p>
-		<label>Brief Project Description: <input id="briefdescription" type="text" name="briefdescription" /></label> <span id="briefdescriptionerror" class="error"></span>
-	</p>
-	<p>
-		<label>Project Description: <span id="descriptionerror" class="error"></span><br /><br />
-		<textarea id="description" name="description" cols="40" rows="5"></textarea></label>
-	</p>
-	<p>
-		<input id="submit" type="submit" value="Add Project" />
-	</p>
+<form method="post" action="{{ url_for('add_project') }}" id="form">
+    <p>
+        <label>
+            Project Name: 
+            <input id="name" type="text" name="name" /> 
+            <span id="nameerror" class="error">
+                {% if 'name_blank' in request.errors %}Name cannot be blank!{% endif %}
+                {% if 'name_invalid' in request.errors %}Invalid Name!{% endif %}
+                {% if 'name_duplicate' in request.errors %}Name already exists in the database for this project!{% endif %}
+            </span>
+        </label>
+    </p>
+    <p>
+        <label>
+            Brief Project Description: 
+            <input id="briefdescription" type="text" name="briefdescription" />
+            <span id="briefdescriptionerror" class="error">
+                {% if 'brief_description_blank' in request.errors %}Brief Description cannot be blank!{% endif %}
+                {% if 'brief_description_invalid' in request.errors %}Invalid Brief Description!{% endif %}
+            </span>
+        </label>
+    </p>
+    <p>
+        <label>
+            Project Description: 
+            <span id="descriptionerror" class="error">
+                {% if 'description_blank' in request.errors %}Description cannot be blank!{% endif %}
+                {% if 'description_invalid' in request.errors %}Invalid Description!{% endif %}
+            </span><br /><br />
+<textarea id="description" name="description" cols="40" rows="5"></textarea>
+        </label>
+    </p>
+    <p>
+        <input id="submit" type="submit" value="Add Project" />
+    </p>
 </form>
 {% endblock %}

@@ -1,22 +1,43 @@
 {% extends "layout.html" %}
-{% block title %}Modify Web Server Programming Application Project{% endblock %}
+{% block title %}Modify Project{% endblock %}
 {% block breadcrums %}
-<a href="listprojects.html">Projects</a>/<a href="viewproject.html">Web Server Programming Application</a>/Modify Project - <a href="login.html" id="logout">Logout</a>
+ - <a href="login.html" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
-<form method="post" action="viewproject.html" id="form">
-	<p>
-		<label>Project Name: <input id="name" type="text" name="name" value="Web Server Programming Application"/> <span id="nameerror" class="error"></span></label>
-	</p>
-	<p>
-		<label>Brief Project Description: <input id="briefdescription" type="text" name="briefdescription" value="A web application used to manage tasks for projects"/> <span id="briefdescriptionerror" class="error"></span></label>
-	</p>
-	<p>
-		<label>Project Description: <span id="descriptionerror" class="error"></span><br /><br />
-		<textarea id="description" name="description" cols="40" rows="5">A web application used to manage tasks for projects.</textarea></label>
-	</p>
-	<p>
-		<input id="submit" type="submit" value="Modify Project" />
-	</p>
+<form method="post" action="{{ url_for('modify_project', project_id=request.project.id) }}" id="form">
+    <p>
+        <label>
+            Project Name: 
+            <input id="name" type="text" name="name" value="{% if request.form.get('name') %}{{ request.form.get('name') }}{% else %}{{ request.project.name }}{% endif %}" /> 
+            <span id="nameerror" class="error">
+                {% if 'name_blank' in request.errors %}Name cannot be blank!{% endif %}
+                {% if 'name_invalid' in request.errors %}Invalid Name!{% endif %}
+                {% if 'name_duplicate' in request.errors %}Name already exists in the database for this project!{% endif %}
+            </span>
+        </label>
+    </p>
+    <p>
+        <label>
+            Brief Project Description: 
+            <input id="briefdescription" type="text" name="briefdescription" value="{% if request.form.get('briefdescription') %}{{ request.form.get('briefdescription') }}{% else %}{{ request.project.brief_description }}{% endif %}" />
+            <span id="briefdescriptionerror" class="error">
+                {% if 'brief_description_blank' in request.errors %}Brief Description cannot be blank!{% endif %}
+                {% if 'brief_description_invalid' in request.errors %}Invalid Brief Description!{% endif %}
+            </span>
+        </label>
+    </p>
+    <p>
+        <label>
+            Project Description: 
+            <span id="descriptionerror" class="error">
+                {% if 'description_blank' in request.errors %}Description cannot be blank!{% endif %}
+                {% if 'description_invalid' in request.errors %}Invalid Description!{% endif %}
+            </span><br /><br />
+<textarea id="description" name="description" cols="40" rows="5">{% if request.form.get('description') %}{{ request.form.get('description') }}{% else %}{{ request.project.description }}{% endif %}</textarea>
+        </label>
+    </p>
+    <p>
+        <input id="submit" type="submit" value="Modify Project" />
+    </p>
 </form>
 {% endblock %}
