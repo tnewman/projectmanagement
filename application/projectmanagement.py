@@ -358,18 +358,8 @@ def get_database():
         created if it does not exist yet. '''
     
     if not hasattr(g, 'database'):
-        # Create a database object based on the application configuration 
-        # values supplied at startup.
-        database_type_str = app.config['DATABASETYPE']
-        database_class = database.get_database_class_from_str(database_type_str)
-        
-        hostname = app.config['DATABASEHOSTNAME']
-        port = app.config['DATABASEPORT']
-        username = app.config['DATABASEUSERNAME']
-        password = app.config['DATABASEPASSWORD']
-        name = app.config['DATABASENAME']
-        
-        g.database = database_class(hostname, port, username, password, name)
+        database_url = app.config['DATABASE_URL']
+        g.database = database.get_database_from_url(database_type_str)
         g.database.open()
     
     return g.database
@@ -388,14 +378,8 @@ def initialize_database(username, password):
         db.initialize_database(username, password)
 
 if __name__ == '__main__':
-    app.secret_key = os.environ['SECRETKEY']
-    
-    app.config['DATABASETYPE'] = os.environ['DATABASETYPE']
-    app.config['DATABASEHOSTNAME'] = os.environ['DATABASEHOSTNAME']
-    app.config['DATABASEPORT'] = int(os.environ['DATABASEPORT'])
-    app.config['DATABASEUSERNAME'] = os.environ['DATABASEUSERNAME']
-    app.config['DATABASEPASSWORD'] = os.environ['DATABASEPASSWORD']
-    app.config['DATABASENAME'] = os.environ['DATABASENAME']
+    app.secret_key = os.environ['SECRET_KEY']
+    app.config['DATABASE_URL'] = os.environ['DATABASE_URL']
     
     if len(sys.argv) == 1:
         # No command line arguments. Run the server.

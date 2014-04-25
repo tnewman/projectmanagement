@@ -3,11 +3,12 @@
 
 from abc import ABCMeta, abstractmethod
 from model import Complexity, Status, Project, Task, Login
+import urllib.parse
 import psycopg2
 
-def get_database_class_from_str(class_name):
-    ''' Converts a class name to a class object that can be found in 
-        the database module.
+def get_database_from_url(database_url_str):
+    ''' Uses a database URL to return an instance of the class that can 
+        be found in the database module.
         
         Args:
             class_name(str): The name of the class to convert. The name 
@@ -19,9 +20,21 @@ def get_database_class_from_str(class_name):
         Raises:
             AttributeError: The specified class does not exist.'''
     
-    module_name = __name__
-    module = __import__(module_name)
-    return getattr(module, class_name)
+    database_url = urllib.parse.urlparse(database_url_str)
+    
+    engine = database_url.scheme
+    database = database_url.path[1:]
+    username = database_url.username
+    password = database_url.password
+    host = database_url.hostname
+    port = database_url.port
+    
+    if engine == 'postgres':
+        db_class = PostgreSQL
+    else:
+        raise Exception('Invalid database engine specified.')
+    
+    return db_class(host, port, username, password, database)
 
 class Database:
     ''' Abstract base class specifying the interfaces that all database 
