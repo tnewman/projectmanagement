@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Add Project{% endblock %}
 {% block breadcrums %}
- - <a href="login.html" id="logout">Logout</a>
+<a href="{{ url_for('projects') }}">Projects</a> 
+/ Add - 
+<a href="{{ url_for('logout') }}" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
 <form method="post" action="{{ url_for('add_project') }}" id="form">

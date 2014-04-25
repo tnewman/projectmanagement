@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}{{ request.task.name }}{% endblock %}
 {% block breadcrums %}
- - <a href="login.html" id="logout">Logout</a>
+<a href="{{ url_for('projects') }}">Projects</a> 
+/ <a href="{{ url_for('project', project_id=request.project.id) }}">{{ request.project.name }}</a>
+/ {{request.task.name}} - 
+<a href="{{ url_for('logout') }}" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
 <table>

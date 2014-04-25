@@ -4,6 +4,8 @@ from model import *
 import database
 import jinja2
 import os
+import sys
+
 app = Flask(__name__)
 
 app.debug = True
@@ -209,7 +211,7 @@ def add_task(project_id):
     
     db = get_database()
     
-    project = db.load_project(project_id)
+    request.project = db.load_project(project_id)
     
     # Cannot add a task for a project that does not exist
     if not project:
@@ -234,7 +236,7 @@ def modify_task(project_id, task_id):
     
     db = get_database()
     
-    project = db.load_project(project_id)
+    request.project = db.load_project(project_id)
     
     # Cannot add a task for a project that does not exist
     if not project:
@@ -379,7 +381,12 @@ def close_database(error):
     
     if hasattr(g, 'db'):
         g.database.close()
-    
+
+def initialize_database(username, password):
+    with app.app_context():
+        db = get_database()
+        db.initialize_database(username, password)
+
 if __name__ == '__main__':
     app.secret_key = os.environ['SECRETKEY']
     
@@ -390,4 +397,20 @@ if __name__ == '__main__':
     app.config['DATABASEPASSWORD'] = os.environ['DATABASEPASSWORD']
     app.config['DATABASENAME'] = os.environ['DATABASENAME']
     
-    app.run()
+    if len(sys.argv) == 1:
+        # No command line arguments. Run the server.
+        app.run()
+        sys.exit(0)
+    elif len(sys.argv) == 4:
+        if sys.argv[1] == '-initializedatabase':
+            # Initialize the database.
+            username = sys.argv[2]
+            password = sys.argv[3]
+            
+            initialize_database(username, password)
+            sys.exit(0)
+    
+    print('projectmanagement.py')
+    print('Run Server: projectmanagement.py')
+    print('Initialize Database: projectmanagement.py -initializedatabase username password')
+    sys.exit(1)

@@ -1,11 +1,25 @@
 {% extends "layout.html" %}
 {% block title %}{{ request.project.name }}{% endblock %}
 {% block breadcrums %}
- - <a href="login.html" onclick="warnLogout()" id="logout">Logout</a>
+<a href="{{ url_for('projects') }}">Projects</a> 
+/ {{ request.project.name }} - 
+<a href="{{ url_for('logout') }}" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
-{% if request.tasks %}
+<table>
+    <tr>
+        <th>Project Name</th>
+        <th>Brief Project Description</th>
+    </tr>
+    <tr>
+        <td>{{ request.project.name }}</td>
+        <td>{{ request.project.brief_description }}</td>
+    </tr>
+</table>
+<h3>Project Description</h3>
 <p>{{ request.project.description }}</p>
+{% if request.tasks %}
+<h3>Tasks</h3>
 <table>
     <tr>
         <th>Task Name</th>

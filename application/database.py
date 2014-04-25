@@ -258,6 +258,23 @@ class Database:
                 (divide by 0, etc.).
                 
                 DataIntegrityError: Constrain violation.'''
+        
+        return NotImplemented
+    
+    @abstractmethod
+    def initialize_database(self, username, password):
+        ''' Initializes the database using a database-specific schema.
+            
+            Args:
+                username (str): The username for the initial application user.
+                password (str): The password for the initial application user.
+            
+            Raises:
+                DataCalculationError: Calculation caused an exception 
+                (divide by 0, etc.).
+                
+                DataIntegrityError: Constrain violation.'''
+        
         return NotImplemented
 
 class DataCalculationError(Exception):
@@ -617,6 +634,33 @@ class PostgreSQL(Database):
             return login
         else:
             return None
+    
+    def initialize_database(self, username, password):
+        ''' Initializes the database using a database-specific schema.
+            
+            Args:
+                username (str): The username for the initial application user.
+                password (str): The password for the initial application user.
+            
+            Raises:
+                DataCalculationError: Calculation caused an exception 
+                (divide by 0, etc.).
+                
+                DataIntegrityError: Constrain violation.'''
+        
+        schema_name = 'postgresqlschema.sql'
+        
+        with open(schema_name, 'r') as schema_file:
+            cursor = self._connection.cursor()
+            
+            try:
+                rows = cursor.execute(schema_file.read())
+                cursor.execute('INSERT INTO login(username, password) VALUES (%s, %s)',
+                               [username, password])
+                    
+                self._connection.commit()
+            except:
+                print('Database schema already exists.')
     
     def _execute_query(self, sql, parameters):
         ''' Executes an SQL query that returns results.

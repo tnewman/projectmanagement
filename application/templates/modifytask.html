@@ -1,7 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}Modify Task{% endblock %}
 {% block breadcrums %}
- - <a href="login.html" id="logout">Logout</a>
+<a href="{{ url_for('projects') }}">Projects</a> 
+/ <a href="{{ url_for('project', project_id=request.project.id) }}">{{ request.project.name }}</a>
+/ <a href="{{ url_for('task', project_id=request.task.project_id, task_id=request.task.id) }}">{{request.task.name}}</a> 
+/ Modify - 
+<a href="{{ url_for('logout') }}" id="logout">Logout</a>
 {% endblock %}
 {% block content %}
 <form method="post" action="{{ url_for('modify_task', project_id=request.task.project_id, task_id=request.task.id) }}" id="form">
