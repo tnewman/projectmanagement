@@ -10,21 +10,23 @@
     <p>
         <label>
             Project Name: 
-            <input id="name" type="text" name="name" /> 
+            <input id="name" type="text" name="name" maxlength="50" /> 
             <span id="nameerror" class="error">
                 {% if 'name_blank' in request.errors %}Name cannot be blank!{% endif %}
                 {% if 'name_invalid' in request.errors %}Invalid Name!{% endif %}
                 {% if 'name_duplicate' in request.errors %}Name already exists in the database for this project!{% endif %}
+                {% if 'name_length' in request.errors %}Names are limited to a length of 50 characters!{% endif %}
             </span>
         </label>
     </p>
     <p>
         <label>
             Brief Project Description: 
-            <input id="briefdescription" type="text" name="briefdescription" />
+            <input id="briefdescription" type="text" name="briefdescription" maxlength="50" />
             <span id="briefdescriptionerror" class="error">
                 {% if 'brief_description_blank' in request.errors %}Brief Description cannot be blank!{% endif %}
                 {% if 'brief_description_invalid' in request.errors %}Invalid Brief Description!{% endif %}
+                {% if 'brief_description_length' in request.errors %}Brief descriptions are limited to a length of 50 characters!{% endif %}
             </span>
         </label>
     </p>
@@ -34,8 +36,9 @@
             <span id="descriptionerror" class="error">
                 {% if 'description_blank' in request.errors %}Description cannot be blank!{% endif %}
                 {% if 'description_invalid' in request.errors %}Invalid Description!{% endif %}
+                {% if 'description_length' in request.errors %}Descriptions are limited to a length of 50 characters!{% endif %}
             </span><br /><br />
-            <textarea id="description" name="description" cols="40" rows="5"></textarea>
+            <textarea id="description" name="description" cols="40" rows="5" maxlength="1000"></textarea>
         </label>
     </p>
     <p>

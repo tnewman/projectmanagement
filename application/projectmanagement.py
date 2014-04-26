@@ -294,6 +294,8 @@ def _validate_task_post(task):
     
     if name_field == '':
         errors.append('name_blank')
+    elif len(name_field) > 50:
+        errors.append('name_length')
     else:
         try:
             task.name = name_field
@@ -302,6 +304,8 @@ def _validate_task_post(task):
     
     if brief_description_field == '':
         errors.append('brief_description_blank')
+    elif len(brief_description_field) > 50:
+        errors.append('brief_description_length')
     else:
         try:
             task.brief_description = brief_description_field
@@ -310,6 +314,8 @@ def _validate_task_post(task):
     
     if description_field == '':
         errors.append('description_blank')
+    elif len(description_field) > 1000:
+        errors.append('description_length')
     else:
         try:
             task.description = description_field
