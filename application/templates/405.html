@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}405 Method Not Allowed{% endblock %}
+{% block breadcrums %}
+<a href="{{ url_for('index') }}">Index</a> / 405
+{% endblock %}
+{% block content %}
+The request method is not allowed for this resource.
+{% endblock %}

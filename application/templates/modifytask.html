@@ -33,16 +33,13 @@
     <p>
         <label>
             Task Description: 
-            <span id="descriptionerror" class="error"></span><br /><br />
-            <textarea id="description" name="description" cols="40" rows="5">
-{% if request.form.get('description') %}{{ request.form.get('description') }}{% else %}{{ request.task.description }}{% endif %}
-            </textarea>
-            <span id="taskdescriptionerror" class="error">
+            <span id="descriptionerror" class="error">
                 {% if 'description_blank' in request.errors %}Description cannot be blank!{% endif %}
                 {% if 'description_invalid' in request.errors %}Invalid Description!{% endif %}
-            </span>
+            </span><br /><br />
+            <textarea id="description" name="description" cols="40" rows="5">{% if request.form.get('description') %}{{ request.form.get('description') }}{% else %}{{ request.task.description }}{% endif %}</textarea>
         </label>
-    </p
+    </p>
     <p>
         <label>
             Complexity:

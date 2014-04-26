@@ -128,8 +128,8 @@ def modify_project(project_id):
     
     return render_template('modifyproject.html')
 
-@app.route('/project/<int:project_id>/deleteproject')
-def delete_project(project_id, methods=['POST']):
+@app.route('/project/<int:project_id>/deleteproject', methods=['POST'])
+def delete_project(project_id):
     if not 'user_id' in session:
         return redirect(url_for('logout'))
     
@@ -357,6 +357,10 @@ def _validate_task_post(task):
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html'), 404
+
+@app.errorhandler(405)
+def not_found(error):
+    return render_template('405.html'), 405
     
 @app.errorhandler(500)
 def internal_server_error(error):
