@@ -360,7 +360,7 @@ def get_database():
     
     if not hasattr(g, 'database'):
         database_url = app.config['DATABASE_URL']
-        g.database = database.get_database_from_url(database_type_str)
+        g.database = database.get_database_from_url(database_url)
         g.database.open()
     
     return g.database
