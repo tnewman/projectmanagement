@@ -499,6 +499,11 @@ class PostgreSQL(Database):
             
             task.due_date = row[6]
             
+            try:
+                task.status = Status(row[7])
+            except(ValueError):
+                task.status = Status.UNKNOWN
+            
             tasks.append(task)
         
         return tasks
@@ -547,6 +552,11 @@ class PostgreSQL(Database):
                 task.complexity = Complexity.UNKNOWN
             
             task.due_date = row[6]
+            
+            try:
+                task.status = Status(row[7])
+            except(ValueError):
+                task.status = Status.UNKNOWN
             
             return task
         else:
