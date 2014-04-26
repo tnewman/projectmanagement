@@ -181,7 +181,7 @@ def _validate_project_post(project):
     projects = db.load_projects()
     
     for current_project in projects:
-        if current_project.name == task.name:
+        if current_project.name == project.name:
             # The name can obviously be the same if the same task is 
             # being updated
             if current_project.id != project.id:

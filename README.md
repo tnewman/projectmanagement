@@ -66,7 +66,6 @@ Heroku Setup
 * Set the debug mode environmental variable to false: `heroku config:set DEBUG=False`
 * Set the secret key environmental variable (make sure you change this 
   to a unique value): `heroku config:set SECRET_KEY=YOURKEYHERE`
-* Set the secret key environmental variable: 
 * Push the application to Heroku: `git push heroku master`
 * Disable all of the Web Dynos: `heroku ps:scale web=0`
 * Enter the Heroku BASH prompt: `heroku run bash`
