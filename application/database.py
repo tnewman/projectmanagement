@@ -3,8 +3,9 @@
 
 from abc import ABCMeta, abstractmethod
 from .model import Complexity, Status, Project, Task, Login
-import urllib.parse
+import os
 import psycopg2
+import urllib.parse
 
 def get_database_from_url(database_url_str):
     ''' Uses a database URL to return an instance of the class that can 
@@ -661,9 +662,12 @@ class PostgreSQL(Database):
                 
                 DataIntegrityError: Constrain violation.'''
         
+        module_path = os.path.abspath(__file__)
+        schema_directory = os.path.dirname(module_path)
         schema_name = 'postgresqlschema.sql'
+        schema_path = schema_directory + '/' + schema_name
         
-        with open(schema_name, 'r') as schema_file:
+        with open(schema_path, 'r') as schema_file:
             cursor = self._connection.cursor()
             
             try:
