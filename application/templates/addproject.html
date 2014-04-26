@@ -10,7 +10,7 @@
     <p>
         <label>
             Project Name: 
-            <input id="name" type="text" name="name" maxlength="50" /> 
+            <input id="name" type="text" name="name" /> 
             <span id="nameerror" class="error">
                 {% if 'name_blank' in request.errors %}Name cannot be blank!{% endif %}
                 {% if 'name_invalid' in request.errors %}Invalid Name!{% endif %}
@@ -22,7 +22,7 @@
     <p>
         <label>
             Brief Project Description: 
-            <input id="briefdescription" type="text" name="briefdescription" maxlength="50" />
+            <input id="briefdescription" type="text" name="briefdescription" />
             <span id="briefdescriptionerror" class="error">
                 {% if 'brief_description_blank' in request.errors %}Brief Description cannot be blank!{% endif %}
                 {% if 'brief_description_invalid' in request.errors %}Invalid Brief Description!{% endif %}
@@ -38,7 +38,7 @@
                 {% if 'description_invalid' in request.errors %}Invalid Description!{% endif %}
                 {% if 'description_length' in request.errors %}Descriptions are limited to a length of 50 characters!{% endif %}
             </span><br /><br />
-            <textarea id="description" name="description" cols="40" rows="5" maxlength="1000"></textarea>
+            <textarea id="description" name="description" cols="40" rows="5"></textarea>
         </label>
     </p>
     <p>
