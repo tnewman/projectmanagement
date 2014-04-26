@@ -8,6 +8,7 @@ import os
 app = Flask(__name__)
 app.secret_key = os.environ['SECRET_KEY']
 app.config['DATABASE_URL'] = os.environ['DATABASE_URL']
+
 app.debug = bool(os.environ['DEBUG'])
 
 @app.route('/')

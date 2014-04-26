@@ -35,13 +35,25 @@ which are lacking in Gunicorn).
   - UNIX: `source bin/activate`
   - Windows: `venv\Scripts\activate`
 * Install the required packages from requirements.txt with pip:
-  - `pip install -r requirements.txt
-* Create a file called `.env`.
-  - Add the following variables to the `.env`:
-```bash
+  - `pip install -r requirements.txt`
+* Create a file called `configuration.cfg`.
+  - Add the following variables to `configuration.cfg`:
+```
+[Configuration]
 DATABASE_URL=scheme://dbusername:dbpassword@dbhost:dbport/dbname
 DEBUG=False/True (toggles debug mode)
 SECRET_KEY=A long, random, key used for cookie encryption. When this changes, all cookies expire.
 ```
 * Initialize the database schema with tables and the initial login:
-  - 
+  - DO NOT complete these steps if the database is already set up.
+  - `python projectmanagement.py -initializedatabase USERNAME PASSWORD`
+  - `USERNAME` and `PASSWORD` are the initial login credentials that 
+    will be used to access the application.
+
+Running Local Development Server
+--------------------------------
+* Navigate into the repository folder via the command line
+* Activate the VirtualEnv shell:
+  - UNIX: `source bin/activate`
+  - Windows: `venv\Scripts\activate`
+* Run the server: `python projectmanagement.py`
