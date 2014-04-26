@@ -1,8 +1,23 @@
+import configparser
 import os
 import sys
-from application.projectmanagement import app, initialize_database
+
+def load_config_file():
+    config = configparser.ConfigParser()
+    
+    if not config.read('configuration.cfg'):
+        return
+    
+    os.environ['SECRET_KEY'] = config['Configuration']['SECRET_KEY']
+    os.environ['DATABASE_URL'] = config['Configuration']['DATABASE_URL']
+    os.environ['DEBUG'] = config['Configuration']['DEBUG']
+    
 
 if __name__ == '__main__':
+    load_config_file()
+    
+    from application.projectmanagement import app, initialize_database
+    
     if len(sys.argv) == 1:
         # No command line arguments. Run the server.
         app.run()
