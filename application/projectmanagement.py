@@ -7,8 +7,8 @@ import os
 import sys
 
 app = Flask(__name__)
-
-app.debug = True
+app.secret_key = os.environ['SECRET_KEY']
+app.config['DATABASE_URL'] = os.environ['DATABASE_URL']
 
 @app.route('/')
 def index():
@@ -378,9 +378,6 @@ def initialize_database(username, password):
         db.initialize_database(username, password)
 
 if __name__ == '__main__':
-    app.secret_key = os.environ['SECRET_KEY']
-    app.config['DATABASE_URL'] = os.environ['DATABASE_URL']
-    
     if len(sys.argv) == 1:
         # No command line arguments. Run the server.
         app.run()
