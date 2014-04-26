@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import *
-from model import *
-import database
+from .model import *
+from . import database
 import jinja2
 import os
 import sys

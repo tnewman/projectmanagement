@@ -2,7 +2,7 @@
     a persistent data store.'''
 
 from abc import ABCMeta, abstractmethod
-from model import Complexity, Status, Project, Task, Login
+from .model import Complexity, Status, Project, Task, Login
 import urllib.parse
 import psycopg2
 
