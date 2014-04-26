@@ -353,6 +353,14 @@ def _validate_task_post(task):
     
     return errors
 
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
+    
+@app.errorhandler(500)
+def internal_server_error(error):
+    return render_template('500.html'), 500
+
 def get_database():
     ''' Returns the request's database object. The database object is 
         created if it does not exist yet. '''
