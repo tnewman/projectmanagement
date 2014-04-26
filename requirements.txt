@@ -6,4 +6,3 @@ gunicorn==18.0
 itsdangerous==0.24
 virtualenv==1.11.4
 psycopg2==2.5.2
-gunicorn==18.0
