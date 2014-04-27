@@ -36,7 +36,7 @@
             <span id="descriptionerror" class="error">
                 {% if 'description_blank' in request.errors %}Description cannot be blank!{% endif %}
                 {% if 'description_invalid' in request.errors %}Invalid Description!{% endif %}
-                {% if 'description_length' in request.errors %}Descriptions are limited to a length of 50 characters!{% endif %}
+                {% if 'description_length' in request.errors %}Descriptions are limited to a length of 1,000 characters!{% endif %}
             </span><br /><br />
             <textarea id="description" name="description" cols="40" rows="5"></textarea>
         </label>

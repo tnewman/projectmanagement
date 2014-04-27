@@ -1,4 +1,11 @@
 /*
+ * File: scripts.js
+ * Description: Client-side form field validation.
+ * Date: 2014/04/27
+ * Programmer: Thomas Newman
+ */
+
+/*
  * Wire event handlers on page load
  */
 
@@ -178,7 +185,9 @@ function validationInit()
 	}
 }
 
-// Validates all form fields requiring validation
+// Validates all form fields requiring validation. Returns true if all 
+// of the fields there were found on the page validated, otherwise false 
+// is returned.
 function validateFields()
 {
 	var nameField = document.getElementById("name");
@@ -189,7 +198,7 @@ function validateFields()
 	var passwordField = document.getElementById("password");
 	var validFields = true;
 	
-	// Only validate the fields that exist on this page
+	// Only validate the name field if it exists on the page
 	if(nameField != null)
 	{
 		if(!validateName())
@@ -198,6 +207,7 @@ function validateFields()
 		}
 	}
 	
+    // Only validate the brief description field if it exists on the page
 	if(briefDescriptionField != null)
 	{
 		if(!validateBriefDescription())
@@ -206,6 +216,7 @@ function validateFields()
 		}
 	}
 	
+    // Only validate the description field if it exists on the page
 	if(descriptionField != null)
 	{
 		if(!validateDescription())
@@ -214,6 +225,7 @@ function validateFields()
 		}
 	}
 	
+    // Only validate the due date field if it exists on the page
 	if(dueDateField != null)
 	{
 		if(!validateDueDate())
@@ -230,6 +242,7 @@ function validateFields()
 		}
 	}
 	
+    // Only validate the username field if it exists on the page
 	if(passwordField != null)
 	{
 		if(!validatePassword())
@@ -253,6 +266,13 @@ function validateName()
 		errorDiv.innerHTML = "Name cannot be blank!";
 		return false;
 	}
+    
+    // Length Check
+    if(!shortFieldLengthCheck(nameField))
+    {
+        errorDiv.innerHTML = "Names are limited to a length of 50 characters!";
+        return false;
+    }
 	
 	errorDiv.innerHTML = "";
 	return true;
@@ -270,6 +290,13 @@ function validateBriefDescription()
 		errorDiv.innerHTML = "Brief Description cannot be blank!";
 		return false;
 	}
+    
+    // Length Check
+    if(!shortFieldLengthCheck(briefDescriptionField))
+    {
+        errorDiv.innerHTML = "Brief descriptions are limited to a length of 50 characters!";
+        return false;
+    }
 	
 	errorDiv.innerHTML = "";
 	return true;
@@ -287,6 +314,13 @@ function validateDescription()
 		errorDiv.innerHTML = "Description cannot be blank!";
 		return false;
 	}
+    
+    // Length Check
+    if(!longFieldLengthCheck(descriptionField))
+    {
+        errorDiv.innerHTML = "Descriptions are limited to a length of 1000 characters!";
+        return false;
+    }
 	
 	errorDiv.innerHTML = "";
 	return true;
@@ -443,6 +477,30 @@ function isFieldDate(element)
 	}
 	
 	return true;
+}
+
+// Checks if the element's input is within the limits for long fields. 
+// Returns true if the field is within bounds, otherwise false is returned.
+function shortFieldLengthCheck(element)
+{
+    if(element.value.length <= 50)
+    {
+        return true;
+    }
+    
+    return false;
+}
+
+// Checks if the element's input is within limits for long fields.
+// Returns true if the field is within bounds, otherwise false is returned.
+function longFieldLengthCheck(element)
+{
+    if(element.value.length <= 1000)
+    {
+        return true;
+    }
+    
+    return false;
 }
 
 // Checks if a given year is a leap year
