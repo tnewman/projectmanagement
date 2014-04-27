@@ -46,8 +46,8 @@
 <p>
     <a href="{{ url_for('add_task', project_id=request.project.id) }}">Add Task</a>
     <a href="{{ url_for('modify_project', project_id=request.project.id) }}">Modify Project</a>
-    <form method="post" action="{{ url_for('delete_project', project_id=request.project.id) }}">
-        <input id="delete" type="submit" value="Delete Task" />
-    </form>
 </p>
+<form method="post" action="{{ url_for('delete_project', project_id=request.project.id) }}">
+    <input id="delete" type="submit" value="Delete Task" />
+</form>
 {% endblock %}
