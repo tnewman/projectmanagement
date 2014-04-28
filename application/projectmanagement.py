@@ -19,15 +19,15 @@ app = Flask(__name__)
 
 # Set the secret key for cookie encryption to the secret key stored in 
 # the environmental variables.
-app.secret_key = os.environ['SECRET_KEY']
+app.secret_key = os.environ['SECRET_KEY'] or ''
 
 # Set the application database URL to the database URL stored in the 
 # environmental variables.
-app.config['DATABASE_URL'] = os.environ['DATABASE_URL']
+app.config['DATABASE_URL'] = os.environ['DATABASE_URL'] or ''
 
 # Set the debug mode for the application to the debug mode stored in the 
 # environmental variables.
-app.debug = bool(os.environ['DEBUG'])
+app.debug = bool(os.environ['DEBUG'] or '')
 
 @app.route('/')
 def index():
