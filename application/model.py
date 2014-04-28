@@ -1,3 +1,12 @@
+# File: model.py
+# Description: Provides entity classes that represent the physical 
+#              entities of the Project Management application.
+# Date: 2014/04/27
+# Programmer: Thomas Newman
+
+''' Provides entity classes that represent the physical entities of the 
+    Project Management application. '''
+
 from datetime import datetime
 from enum import Enum
 
@@ -43,9 +52,11 @@ class Project:
         
     @id.setter
     def id(self, value):
+        # Ids must be int types
         if not isinstance(value, int):
             raise ValueError('id must be an integer')
         
+        # Only allow positive ids
         if value < 0:
             raise ValueError('id must be positive')
         
@@ -58,6 +69,7 @@ class Project:
     
     @name.setter
     def name(self, value):
+        # Only allow string types
         if not isinstance(value, str):
             raise ValueError('name must be a string')
         
@@ -70,6 +82,7 @@ class Project:
     
     @brief_description.setter
     def brief_description(self, value):
+        # Only allow string types
         if not isinstance(value, str):
             raise ValueError('brief_description must be a string')
         
@@ -82,6 +95,7 @@ class Project:
     
     @description.setter
     def description(self, value):
+        # Only allow string types
         if not isinstance(value, str):
             raise ValueError('description must be a string')
         
@@ -111,9 +125,11 @@ class Task:
     
     @id.setter
     def id(self, value):
+        # Ids must be int types
         if not isinstance(value, int):
             raise ValueError('id must be an integer')
         
+        # Only allow positive ids
         if value < 0:
             raise ValueError('id must be positive')
         
@@ -128,9 +144,11 @@ class Task:
     
     @project_id.setter
     def project_id(self, value):
+        # Ids must be int types
         if not isinstance(value, int):
             raise ValueError('project_id must be an integer')
     
+        # Only allow positive ids
         if value < 0:
             raise ValueError('project_id must be positive')
         
@@ -144,6 +162,7 @@ class Task:
     
     @name.setter
     def name(self, value):
+        # Only allow string types
         if not isinstance(value, str):
             raise ValueError('name must be a string')
         
@@ -157,6 +176,7 @@ class Task:
     
     @brief_description.setter
     def brief_description(self, value):
+        # Only allow string types
         if not isinstance(value, str):
             raise ValueError('name must be a string')
         
@@ -170,6 +190,7 @@ class Task:
     
     @description.setter
     def description(self, value):
+        # Only allow string types
         if not isinstance(value, str):
             raise ValueError('name must be a string')
         
@@ -183,6 +204,7 @@ class Task:
     
     @complexity.setter
     def complexity(self, value):
+        # Coerce the value into a Complexity enum
         self._complexity = Complexity(value)
     
     @property
@@ -193,12 +215,15 @@ class Task:
     
     @due_date.setter
     def due_date(self, value):
+        # Accept datetime types
         if isinstance(value, datetime):
             self._due_date = value
         else:
             try:
+                # Parse the date if it is formatted as YY-MM-DD HH:MM:SS
                 self._due_date = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
             except(ValueError):
+                # Parse the date if it is formatted as YY-MM-DD
                 self._due_date = datetime.strptime(value, '%Y-%m-%d')
     
     @property
@@ -212,6 +237,14 @@ class Task:
         self._status = Status(value)
     
     def is_task_past_due(self):
+        ''' Determines whether or not the task is past due.
+        
+        Returns:
+            True -- The task is past due.
+            False -- The task is not past due. '''
+    
+        # The task is past due if the current date is beyond the due date 
+        # and the status is not complete.
         return self.due_date < datetime.now() and self.status != Status.COMPLETE
 
 
@@ -233,9 +266,11 @@ class Login:
     
     @id.setter
     def id(self, value):
+        # Only allow int types for ids
         if not isinstance(value, int):
                 raise ValueError('id must be an integer')
         
+        # Do not allow negative ids
         if value < 0:
             raise ValueError('id must be positive')
         
@@ -249,6 +284,7 @@ class Login:
     
     @username.setter
     def username(self, value):
+        # Only allow string types for passwords
         if not isinstance(value, str):
             raise ValueError('username must be a string')
         
@@ -262,6 +298,7 @@ class Login:
     
     @password.setter
     def password(self, value):
+        # Only allow string types for passwords
         if not isinstance(value, str):
             raise ValueError('password must be a string')
         

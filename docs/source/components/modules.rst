@@ -1,10 +1,8 @@
-application
-===========
+tnewmanprojectmanagement
+========================
 
 .. toctree::
    :maxdepth: 4
 
-   configuration
-   database
-   model
+   application
    projectmanagement

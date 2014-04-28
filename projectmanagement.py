@@ -1,8 +1,19 @@
+# File: database.py
+# Description: Runs the Project Management Application development server.
+# Date: 2014/04/27
+# Programmer: Thomas Newman
+
 import configparser
 import os
 import sys
 
+''' Runs the Project Management Application development server. '''
+
 def load_config_file():
+    ''' Attempts to load the environmental variables from a configuration 
+        file. If the configuration file does not exist, the existing 
+        environmental variables are left in-tact. '''
+    
     config = configparser.ConfigParser()
     
     if not config.read('configuration.cfg'):

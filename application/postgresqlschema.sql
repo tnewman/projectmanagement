@@ -1,3 +1,10 @@
+/* File: postgresqlschema.sql
+ * Description: Queries used to create the Project Management application 
+ *              database schema for a PostgreSQL database.
+ * Date: 2014/04/27
+ * Programmer: Thomas Newman
+ */
+
 CREATE TABLE project (
   id SERIAL,
   name VARCHAR(50) NOT NULL,
@@ -24,5 +31,5 @@ CREATE TABLE task (
 CREATE TABLE login (
   id SERIAL,
   username VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR(100) NOT NULL,
+  password VARCHAR(50) NOT NULL,
   PRIMARY KEY (id));

@@ -1,3 +1,8 @@
+# File: database.py
+# Description: Provides interaction with a persistent data store.
+# Date: 2014/04/27
+# Programmer: Thomas Newman
+
 ''' database contains classes to provide interaction with 
     a persistent data store.'''
 
@@ -672,6 +677,9 @@ class PostgreSQL(Database):
                 
                 DataIntegrityError: Constrain violation.'''
         
+        # Find the schema path by finding the directory this file is 
+        # located in and then appending the name of the PostgreSQL 
+        # schema file to the path.
         module_path = os.path.abspath(__file__)
         schema_directory = os.path.dirname(module_path)
         schema_name = 'postgresqlschema.sql'
@@ -681,7 +689,10 @@ class PostgreSQL(Database):
             cursor = self._connection.cursor()
             
             try:
-                rows = cursor.execute(schema_file.read())
+                # Add the tables to the database from the schema.
+                cursor.execute(schema_file.read())
+                
+                # Add a user to the database.
                 cursor.execute('INSERT INTO login(username, password) VALUES (%s, %s)',
                                [username, password])
                     
@@ -707,6 +718,7 @@ class PostgreSQL(Database):
                 DataIntegrityError: Constrain violation.'''
         
         try:
+            # Run the query, and fetch all of the rows from the database.
             cursor = self._connection.cursor()
             cursor.execute(sql, parameters)
             rows = cursor.fetchall()
@@ -731,6 +743,7 @@ class PostgreSQL(Database):
                 DataIntegrityError: Constrain violation.'''
         
         try:
+            # Run the query, and commit the results to the database.
             cursor = self._connection.cursor()
             rows = cursor.execute(sql, parameters)
             self._connection.commit()
