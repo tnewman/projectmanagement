@@ -6,7 +6,8 @@
 Welcome to Project Management's documentation!
 ==============================================
 
-Contents:
+This is the low-level documentation of the Project Management application 
+interfaces.
 
 .. toctree::
    :maxdepth: 2
