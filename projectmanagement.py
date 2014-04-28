@@ -3,11 +3,11 @@
 # Date: 2014/04/27
 # Programmer: Thomas Newman
 
+''' Runs the Project Management Application development server. '''
+
 import configparser
 import os
 import sys
-
-''' Runs the Project Management Application development server. '''
 
 def load_config_file():
     ''' Attempts to load the environmental variables from a configuration 
