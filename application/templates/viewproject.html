@@ -6,6 +6,79 @@
  #}
 {% extends "layout.html" %}
 {% block title %}{{ request.project.name }}{% endblock %}
+{% block page_init %}
+
+{% if request.low_complexity_count or request.medium_complexity_count or request.high_complexity_count %}
+var complexity_canvas = document.getElementById("complexity_canvas");
+var complexity_values = new Array();
+var complexity_names = new Array();
+{% endif %}
+
+{% if request.low_complexity_count %}
+complexity_values.push({{ request.low_complexity_count }});
+complexity_names.push("Low Complexity");
+{% endif %}
+
+{% if request.medium_complexity_count %}
+complexity_values.push({{ request.medium_complexity_count }});
+complexity_names.push("Medium Complexity");
+{% endif %}
+
+{% if request.high_complexity_count %}
+complexity_values.push({{ request.high_complexity_count }})
+complexity_names.push("High Complexity")
+{% endif %}
+
+{% if request.low_complexity_count or request.medium_complexity_count or request.high_complexity_count %}
+drawPieChart(complexity_canvas, complexity_names, complexity_values);
+{% endif %}
+
+{% if request.not_started_count or request.in_progress_count %}
+var completion_canvas = document.getElementById("completion_canvas");
+var completion_names = new Array();
+var completion_values = new Array();
+{% endif %}
+
+{% if request.not_started_count %}
+completion_values.push({{ request.not_started_count }});
+completion_names.push("Not Started");
+{% endif %}
+
+{% if request.in_progress_count %}
+completion_values.push({{ request.in_progress_count }});
+completion_names.push("In-Progress");
+{% endif %}
+
+{% if request.complete_count %}
+completion_values.push({{ request.complete_count }});
+completion_names.push("Complete");
+{% endif %}
+
+{% if request.not_started_count or request.in_progress_count %}
+drawPieChart(completion_canvas, completion_names, completion_values);
+{% endif %}
+
+{% if request.on_time_count or request.past_due_count %}
+var past_due_canvas = document.getElementById("past_due_canvas");
+var past_due_names = new Array();
+var past_due_values = new Array();
+{% endif %}
+
+{% if request.on_time_count %}
+past_due_values.push({{ request.on_time_count }});
+past_due_names.push("On-Time");
+{% endif %}
+
+{% if request.past_due_count %}
+past_due_values.push({{ request.past_due_count }});
+past_due_names.push("Past Due");
+{% endif %}
+
+{% if request.on_time_count or request.past_due_count %}
+drawPieChart(past_due_canvas, past_due_names, past_due_values);
+{% endif %}
+
+{% endblock %}
 {% block breadcrums %}
 <a href="{{ url_for('projects') }}">Projects</a> 
 / {{ request.project.name }} - 
@@ -25,6 +98,18 @@
 <h3>Project Description</h3>
 <p>{{ request.project.description }}</p>
 {% if request.tasks %}
+<h3>Project Task Statistics</h3>
+<p class="charts">
+    <canvas id="past_due_canvas" height="150" width="375">
+        No Canvas Support!
+    </canvas>
+    <canvas id="complexity_canvas" height="150" width="375">
+        No Canvas Support!
+    </canvas>
+    <canvas id="completion_canvas" height="150" width="375">
+        No Canvas Support!
+    </canvas>
+</p>
 <h3>Tasks</h3>
 <table>
     <tr>

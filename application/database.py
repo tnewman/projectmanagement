@@ -347,7 +347,7 @@ class PostgreSQL(Database):
         
         projects = []
         sql = ('SELECT id, name, brief_description, description '
-               'FROM project;')
+               'FROM project ORDER BY name;')
         parameters = []
         
         rows = self._execute_query(sql, parameters)
@@ -383,7 +383,7 @@ class PostgreSQL(Database):
                 DataIntegrityError: Constrain violation.'''
         
         sql = ('SELECT id, name, brief_description, description '
-               'FROM project WHERE id = %s;')
+               'FROM project WHERE id = %s ORDER BY name;')
         parameters = [project_id]
         
         rows = self._execute_query(sql, parameters)
@@ -483,7 +483,7 @@ class PostgreSQL(Database):
         tasks = []
         sql = ('SELECT id, project_id, name, brief_description, '
                'description, complexity, due_date, status FROM task '
-               'WHERE project_id=%s;')
+               'WHERE project_id=%s ORDER BY name;')
         parameters = [project_id]
         
         rows = self._execute_query(sql, parameters)
@@ -536,7 +536,7 @@ class PostgreSQL(Database):
         
         sql = ('SELECT id, project_id, name, brief_description, '
                'description, complexity, due_date, status FROM task '
-               'WHERE project_id=%s AND id=%s;')
+               'WHERE project_id=%s AND id=%s ORDER BY name;')
         parameters = [project_id, task_id]
         
         rows = self._execute_query(sql, parameters)
@@ -647,7 +647,8 @@ class PostgreSQL(Database):
                 
                 DataIntegrityError: Constrain violation.'''
         
-        sql = ('SELECT id, username, password FROM login WHERE username=%s;')
+        sql = ('SELECT id, username, password FROM login '
+               'WHERE username=%s ORDER BY name;')
         parameters = [username]
         
         rows = self._execute_query(sql, parameters)

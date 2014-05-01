@@ -53,9 +53,9 @@
         <label>
             Complexity:
             <select name="complexity">
-                <option {% if request.form.get('complexity') == 'Low' %}selected="selected"{% elif request.task.name.value == 'Low' %}selected="selected"{% endif %}>Low</option>
-                <option {% if request.form.get('complexity') == 'Medium' %}selected="selected"{% elif request.task.name.value == 'Medium' %}selected="selected"{% endif %}>Medium</option>
-                <option {% if request.form.get('complexity') == 'High' %}selected="selected"{% elif request.task.name.value == 'High' %}selected="selected"{% endif %}>High</option>
+                <option {% if request.form.get('complexity') == 'Low' %}selected="selected"{% elif request.task.complexity.value == 'Low' %}selected="selected"{% endif %}>Low</option>
+                <option {% if request.form.get('complexity') == 'Medium' %}selected="selected"{% elif request.task.complexity.value == 'Medium' %}selected="selected"{% endif %}>Medium</option>
+                <option {% if request.form.get('complexity') == 'High' %}selected="selected"{% elif request.task.complexity.value == 'High' %}selected="selected"{% endif %}>High</option>
             </select>
             <span id="complexityerror" class="error">
                 {% if 'complexity_blank' in request.errors %}Complexity cannot be blank!{% endif %}

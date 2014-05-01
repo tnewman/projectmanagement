@@ -186,6 +186,44 @@ def project(project_id):
     request.project = db.load_project(project_id)
     request.tasks = db.load_tasks(project_id)
     
+    # Complexity
+    request.low_complexity_count = 0
+    request.medium_complexity_count = 0
+    request.high_complexity_count = 0
+    
+    # Status
+    request.not_started_count = 0
+    request.in_progress_count = 0
+    request.complete_count = 0
+    
+    # Past Due
+    request.on_time_count = 0
+    request.past_due_count = 0
+    
+    # Track status for complexity, status, and past due
+    for task in request.tasks:
+        # Complexity Statistics
+        if task.complexity == Complexity.LOW:
+            request.low_complexity_count = request.low_complexity_count + 1
+        elif task.complexity == Complexity.MEDIUM:
+            request.medium_complexity_count = request.medium_complexity_count + 1
+        elif task.complexity == Complexity.HIGH:
+            request.high_complexity_count = request.high_complexity_count + 1
+        
+        # Status Statistics
+        if task.status == Status.NOT_STARTED:
+            request.not_started_count = request.not_started_count + 1
+        elif task.status == Status.IN_PROGRESS:
+            request.in_progress_count = request.in_progress_count + 1
+        elif task.status == Status.COMPLETE:
+            request.complete_count = request.complete_count + 1
+        
+        # Past Due Statistics
+        if task.is_task_past_due():
+            request.past_due_count = request.past_due_count + 1
+        else:
+            request.on_time_count = request.on_time_count + 1
+    
     if not request.project:
         abort(404)
     
@@ -229,7 +267,7 @@ def modify_project(project_id):
         request.errors = _validate_project_post(request.project)
         
         if not request.errors:
-            db.update_task(request.project)
+            db.update_project(request.project)
             return redirect(url_for('project', project_id=project_id))
     
     return render_template('modifyproject.html')

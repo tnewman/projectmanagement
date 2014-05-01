@@ -10,7 +10,7 @@
  */
 
 // Creates a pie chart for categories.
-function drawPieChart(canvas_element, title, category_names, category_values)
+function drawPieChart(canvas_element, category_names, category_values)
 {
     // Original concept:
     // https://developer.apple.com/library/safari/documentation/AudioVideo/Conceptual/HTML-canvas-guide/CreatingChartsandGraphs/CreatingChartsandGraphs.html
@@ -22,8 +22,8 @@ function drawPieChart(canvas_element, title, category_names, category_values)
         category_total += category_values[i];
     }
     
-    canvas_context = canvas.getContext("2d");
-    canvas_context.lineWidth = 3;
+    canvas_context = canvas_element.getContext("2d");
+    canvas_context.lineWidth = 2;
     canvas_context.fillStyle="#005b89";
     canvas_context.strokeStyle = "white";
     
@@ -57,7 +57,7 @@ function drawPieChart(canvas_element, title, category_names, category_values)
         text_x_start = x_midpoint + radius * Math.cos(text_angle) * 1.05;
         text_y_start = y_midpoint + radius * Math.sin(text_angle) * 1.05;
         
-        canvas_context.font = "bold 12px Arial";
+        canvas_context.font = "bold 10px Arial";
         canvas_context.fillStyle = "#005b89";
         label = category_names[i] + " (" + (slice_size * 100).toFixed(0) + "%)";
         
