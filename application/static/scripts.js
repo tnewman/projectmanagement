@@ -6,6 +6,93 @@
  */
 
 /*
+ * Chart Functions
+ */
+
+ // Creates a pie chart for categories.
+function drawPieChart(canvas_element, title, category_names, category_values)
+{
+    // Original concept:
+    // https://developer.apple.com/library/safari/documentation/AudioVideo/Conceptual/HTML-canvas-guide/CreatingChartsandGraphs/CreatingChartsandGraphs.html
+    
+    var category_total = 0;
+    
+    for (var i = 0; i < category_values.length; i++)
+    {
+        category_total += category_values[i];
+    }
+    
+    canvas_context = canvas.getContext("2d");
+    canvas_context.lineWidth = 3;
+    canvas_context.fillStyle="#005b89";
+    canvas_context.strokeStyle = "white";
+    
+    var x_midpoint = canvas_element.width / 2;
+    var y_midpoint = canvas_element.height / 2;
+    var radius = Math.min(x_midpoint, y_midpoint) * 0.80;
+    var starting_point = 0;
+    var text_angle = 0;
+    var text_x_distance = 0;
+    var text_y_distance = 0;
+    var text_x_start = 0;
+    var text_y_start = 0;
+    var label = "";
+    
+    for (var i = 0; i < category_values.length; i++)
+    {
+        slice_size = category_values[i] / category_total;
+        slice_angle = (slice_size * 2 * Math.PI)
+        ending_point = starting_point + slice_angle;
+        
+        // Draw Slice
+        canvas_context.beginPath();
+        canvas_context.arc(x_midpoint, y_midpoint, radius, starting_point, ending_point);
+        canvas_context.lineTo(x_midpoint, y_midpoint);
+        canvas_context.closePath();
+        canvas_context.fill();
+        canvas_context.stroke();
+        
+        // Draw Label
+        text_angle = starting_point + (slice_angle / 2);
+        text_x_start = x_midpoint + radius * Math.cos(text_angle) * 1.05;
+        text_y_start = y_midpoint + radius * Math.sin(text_angle) * 1.05;
+        
+        canvas_context.font = "bold 12px Arial";
+        canvas_context.fillStyle = "#005b89";
+        label = category_names[i] + " (" + (slice_size * 100).toFixed(0) + "%)";
+        
+        // Quadrant IV
+        if (text_angle >= 0 && text_angle < (Math.PI / 2))
+        {
+            canvas_context.textAlign = "left";
+            canvas_context.textBaseline="top";
+        }
+        // Quadrant III
+        else if (text_angle >= (Math.PI / 2) && text_angle < Math.PI)
+        {
+            canvas_context.textAlign = "right";
+            canvas_context.textBaseline="top";
+        }
+        // Quadrant II
+        else if (text_angle >= Math.PI && text_angle < (3 * Math.PI / 2))
+        {
+            canvas_context.textAlign = "right";
+            canvas_context.textBaseline="bottom";
+        }
+        // Quadrant I
+        else if (text_angle >= (3 * Math.PI / 2) && text_angle < (2 * Math.PI))
+        {
+            canvas_context.textAlign = "left";
+            canvas_context.textBaseline="bottom";
+        }
+        
+        canvas_context.fillText(label, text_x_start, text_y_start);
+        
+        starting_point = ending_point;
+    }
+}
+
+/*
  * Wire event handlers on page load
  */
 
@@ -26,7 +113,6 @@ function init()
 // event handler when each form element is modified.
 function navigationInit()
 {
-	
 	var form = document.getElementById("form");
 	
 	// Only bother processing form elements if the form element exists
