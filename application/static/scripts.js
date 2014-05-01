@@ -9,7 +9,7 @@
  * Chart Functions
  */
 
- // Creates a pie chart for categories.
+// Creates a pie chart for categories.
 function drawPieChart(canvas_element, title, category_names, category_values)
 {
     // Original concept:
