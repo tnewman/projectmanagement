@@ -648,7 +648,7 @@ class PostgreSQL(Database):
                 DataIntegrityError: Constrain violation.'''
         
         sql = ('SELECT id, username, password FROM login '
-               'WHERE username=%s ORDER BY name;')
+               'WHERE username=%s ORDER BY username;')
         parameters = [username]
         
         rows = self._execute_query(sql, parameters)
