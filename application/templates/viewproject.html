@@ -139,6 +139,6 @@ drawPieChart(past_due_canvas, past_due_names, past_due_values);
     <a href="{{ url_for('modify_project', project_id=request.project.id) }}">Modify Project</a>
 </p>
 <form method="post" action="{{ url_for('delete_project', project_id=request.project.id) }}">
-    <input id="delete" type="submit" value="Delete Task" />
+    <input id="delete" type="submit" value="Delete Project" />
 </form>
 {% endblock %}
