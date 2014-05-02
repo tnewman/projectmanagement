@@ -29,7 +29,7 @@ function drawPieChart(canvas_element, category_names, category_values)
     
     var x_midpoint = canvas_element.width / 2;
     var y_midpoint = canvas_element.height / 2;
-    var radius = Math.min(x_midpoint, y_midpoint) * 0.80;
+    var radius = Math.min(x_midpoint, y_midpoint) * 0.75;
     var starting_point = 0;
     var text_angle = 0;
     var text_x_distance = 0;
