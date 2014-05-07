@@ -33,7 +33,7 @@ complexity_names.push("High Complexity")
 drawPieChart(complexity_canvas, complexity_names, complexity_values);
 {% endif %}
 
-{% if request.not_started_count or request.in_progress_count %}
+{% if request.not_started_count or request.in_progress_count or request.complete_count %}
 var completion_canvas = document.getElementById("completion_canvas");
 var completion_names = new Array();
 var completion_values = new Array();
@@ -54,7 +54,7 @@ completion_values.push({{ request.complete_count }});
 completion_names.push("Complete");
 {% endif %}
 
-{% if request.not_started_count or request.in_progress_count %}
+{% if request.not_started_count or request.in_progress_count or request.complete_count %}
 drawPieChart(completion_canvas, completion_names, completion_values);
 {% endif %}
 
